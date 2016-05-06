@@ -3,21 +3,29 @@
     <head>
         <meta charset="utf-8">
         <style type="text/css">
-            #fileViewer {
-                width: 60%; /*keep the width of the FileViewer equal to 60% of the browser width*/
-                overflow-x: auto;
-                overflow-y: auto;
-                resize: both;
-                text-align: center;
-                float: left;
-            } 
-            #resizeButton {
-                float: left;
-            }
             html, body {
                 height: 100%;
                 padding: 0;
                 margin: 0;
+            }
+            #fileViewer {
+                overflow: auto;
+                text-align: center;
+                float: left;
+            } 
+            #commentsViewer {
+                float: left;
+                border-style: solid;
+                border-width: 1px;
+                overflow: auto;
+            }
+            #resizeButton {
+                margin-right: 18px;
+                float: right;
+            }
+            #navbar {
+                height: 24px;
+                width: 100%;
             }
         </style>
 
@@ -26,42 +34,62 @@
     </head>
     
     <body>
-        <div id="fileViewer">
-            <img class="Page" src="test_images/932-01.jpg" width="900"> <br>
-            <img class="Page" src="test_images/932-02.jpg" width="900"> <br>
-            <img class="Page" src="test_images/932-03.jpg" width="900"> <br>
+        <div id="navbar">
+            <div id="resizeButton">
+                <button type="button" id="buttonForLarger">+</button>
+                <button type="button" id="buttonForSmaller">-</button>
+            </div>
         </div>
 
-        <div id="commentsViewer">
-            
+        <div id="wrapper">
+            <div id="fileViewer">
+                <img class="Page" src="test_images/932-01.jpg"> <br>
+                <img class="Page" src="test_images/932-02.jpg"> <br>
+                <img class="Page" src="test_images/932-03.jpg"> <br>
+            </div>
+
+            <div id="commentsViewer">
+                <h1>wocao</h1>
+                <h1>wocao</h1>
+                <h1>wocao</h1>
+                <h1>wocao</h1>
+                <h1>wocao</h1>
+                <h1>wocao</h1>
+                <h1>wocao</h1>
+                <h1>wocao</h1>
+                <h1>wocao</h1>
+            </div>
         </div>
 
-        <div id="resizeButton">
-            <button type="button" onclick="viewLarger()">+</button>
-            <button type="button" onclick="viewSmaller()">-</button>
-        </div>
 
         <script type="text/javascript">
-            // the following two js functions is for the page resize button
-            function viewLarger() {   
-                var pages = document.getElementsByClassName("Page");    
-                for (var i = 0; i < pages.length; i++)
-                    pages[i].style.width = (pages[i].width + 80) + "px";   
-            }  
-            function viewSmaller() {   
-                var pages = document.getElementsByClassName("Page");    
-                for (var i = 0; i < pages.length; i++)
-                    pages[i].style.width = (pages[i].width - 80) + "px";   
-            }
+            $("#buttonForLarger").click(function(){
+                $(".Page").css("width", parseInt($(".Page").css("width")) + 80 + "px");         
+            });
+            $("#buttonForSmaller").click(function(){
+                $(".Page").css("width", parseInt($(".Page").css("width")) - 80 + "px");         
+            });
 
-            // the following two jquery commands are to keep the height of the FileViewer equal to the height of the browser no matter how users resize their browsers
             $(document).ready(function(){
-                var fileViewer = document.getElementById("fileViewer");
-                fileViewer.style.height = document.body.clientHeight + "px";
+                //设置wrapper的高度
+                $("#wrapper").css("height", document.body.clientHeight - 24 + "px"); //jquery的css方法既可以设置css内容又可以获取css内容
+                //设置fileViewer的高度和宽度
+                $("#fileViewer").css("height", parseInt($("#wrapper").css("height")) + "px"); 
+                $("#fileViewer").css("width", parseInt($("#wrapper").css("width")) * 0.6 + "px"); //jquery的css方法获得的是字符串，用js的parseInt获取数值
+                //设置commentsViewer的高度和宽度
+                $("#commentsViewer").css("height", parseInt($("#wrapper").css("height")) * 0.6 + "px"); 
+                $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
+                //设置文档的大小
+                $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px"); 
             });
             $(window).resize(function(){
-                var fileViewer = document.getElementById("fileViewer");
-                fileViewer.style.height = document.body.clientHeight + "px";
+                $("#wrapper").css("height", document.body.clientHeight - 24 + "px");
+                $("#fileViewer").css("height", parseInt($("#wrapper").css("height")) + "px"); 
+                $("#fileViewer").css("width", parseInt($("#wrapper").css("width")) * 0.6 + "px");
+                $("#commentsViewer").css("height", parseInt($("#wrapper").css("height")) * 0.6 + "px"); 
+                $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
+                //设置文档的大小
+                $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px"); 
             });
         </script>
     </body>
