@@ -10,8 +10,8 @@ jQuery(document).ready(function() {
     */
     $.backstretch("https://1co1va.dm2301.livefilestore.com/y3mAfgVmNYki1nA-PAkefY4f2cSDitfyL8BijVD8knmQG7e7ZPbUISBupMXLiGD-PXIkQkLgd7ob-Pojf8aB_SqSiX3znQURMJAvbtjVoKr8v7YdtsfeO5U9jd5rFUhrFkfziwrfCPzPikZ-VQi2_1CijgLj7s82C8-NKDWRrhrkzU?width=1680&height=1050&cropmode=none");
     /*
-        原本是用本地的图片，但是本地地址在前面会被自动添加一个app的url，将原本的assets/img/backgrounds/1.jpg变成/sign_up/assets/img/backgrounds/1.jpg，即使是加/static/也会变成/sign_up/assets/img/backgrounds/1.jpg
-        而这个地址在django静态文件地址系统中是错误的，会报404错误找不到图片文件。正确的地址/static/assets/img/backgrounds/1.jpg或者/static/sign_up/assets/img/backgrounds/1.jpg（取决于图片是放在static文件夹还是static文件夹的子文件夹下）
+        原本是用本地的图片，但是本地地址在前面会被自动添加一个app的url，将原本的assets/img/backgrounds/1.jpg变成/home/assets/img/backgrounds/1.jpg，即使是加/static/也会变成/home/assets/img/backgrounds/1.jpg
+        而这个地址在django静态文件地址系统中是错误的，会报404错误找不到图片文件。正确的地址/static/assets/img/backgrounds/1.jpg或者/static/home/assets/img/backgrounds/1.jpg（取决于图片是放在static文件夹还是static文件夹的子文件夹下）
         所以这里直接传到onedrive上，然后直接用绝对url引用
         $.backstretch("assets/img/backgrounds/1.jpg");
      */

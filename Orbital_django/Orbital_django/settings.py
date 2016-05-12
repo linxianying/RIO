@@ -31,7 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'sign_up',
+    'home',
+    'file_viewer',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
