@@ -17,7 +17,12 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 urlpatterns = [
+    # app: admin
     url(r'^admin/', admin.site.urls),
+
+    # app: home
     url(r'^', include('home.urls')),
+
+    # app: file_viewer
     url(r'^file_viewer/', include('file_viewer.urls')),
 ]
