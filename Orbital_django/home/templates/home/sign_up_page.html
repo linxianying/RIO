@@ -105,17 +105,13 @@
                     </div>
 
                     <div class="row">
-                        <iframe name="forSubmitRefresh" style="height: 0px; border: 0;"></iframe>
-                    </div>
-
-                    <div class="row">
                         <div class="col-sm-6 col-sm-offset-3 form-box">
                             
-                        	<form role="form" action="/get_username_and_email" method="post" class="registration-form" target="forSubmitRefresh1">
+                        	<form role="form" action="/handle_submission" method="post" class="registration-form" target="for_submit_refresh_1">
                                 <div class="row">
-                                    <iframe name="forSubmitRefresh1" style="height: 100px; border: 10;"></iframe>
+                                    <iframe name="for_submit_refresh_1" style="height: 100px; border: 10px;"></iframe>
                                 </div>
-
+                                {% csrf_token %}
                         		<fieldset>
 		                        	<div class="form-top">
 		                        		<div class="form-top-left">
@@ -128,12 +124,12 @@
 		                            </div>
 		                            <div class="form-bottom">
 				                        <div class="form-group">
-				                        	<label class="sr-only" for="form-last-name">Username</label>
-				                        	<input type="text" name="form-last-name" placeholder="Username..." class="form-last-name form-control" id="form-last-name">
+				                        	<label class="sr-only" for="username">Username</label>
+				                        	<input type="text" name="username" placeholder="Username..." class="form-last-name form-control" id="form-last-name">
                                         </div>
 				                        <div class="form-group">
-                                            <label class="sr-only" for="form-first-name">Email address</label>
-                                            <input type="email" name="form-first-name" placeholder="Email address..." class="form-first-name form-control" id="form-first-name">
+                                            <label class="sr-only" for="email_address">Email address</label>
+                                            <input type="email" name="email_address" placeholder="Email address..." class="form-first-name form-control" id="form-first-name">
                                         </div>
                                         <button type="submit" class="btn btn-next">Next</button>
                                         <button type="button" class="btn btn-clear">Clear</button>
@@ -141,11 +137,11 @@
 			                    </fieldset>
                             </form>
 			                    
-                            <form role="form" action="/get_verification_code" method="post" class="registration-form" target="forSubmitRefresh2">
+                            <form role="form" action="/handle_submission" method="post" class="registration-form" target="for_submit_refresh_2">
 			                    <div class="row">
-                                    <iframe name="forSubmitRefresh2" style="height: 100px; border: 10;"></iframe>
+                                    <iframe name="for_submit_refresh_2" style="height: 100px; border: 10px;"></iframe>
                                 </div>
-
+                                {% csrf_token %}
                                 <fieldset>
 		                        	<div class="form-top">
 		                        		<div class="form-top-left">
@@ -158,8 +154,8 @@
 		                            </div>
 		                            <div class="form-bottom">
 				                        <div class="form-group">
-				                        	<label class="sr-only" for="form-email">Verification code</label>
-				                        	<input type="text" name="form-email" placeholder="Verification code..." class="form-email form-control" id="form-email">
+				                        	<label class="sr-only" for="verification_code">Verification code</label>
+				                        	<input type="text" name="verification_code" placeholder="Verification code..." class="form-email form-control" id="form-email">
 				                        </div>
 				                        <button type="button" class="btn btn-previous">Previous</button>
 				                        <button type="submit" class="btn btn-next">Next</button>
@@ -168,11 +164,11 @@
 			                    </fieldset>
                             </form>
 			                 
-                            <form role="form" action="/get_password" method="post" class="registration-form" target="forSubmitRefresh3">
+                            <form role="form" action="/handle_submission" method="post" class="registration-form" target="for_submit_refresh_3">
 			                    <div class="row">
-                                    <iframe name="forSubmitRefresh3" style="height: 100px; border: 10;"></iframe>
+                                    <iframe name="for_submit_refresh_3" style="height: 100px; border: 10px;"></iframe>
                                 </div>
-
+                                {% csrf_token %}
                                 <fieldset>
 		                        	<div class="form-top">
 		                        		<div class="form-top-left">
@@ -185,12 +181,12 @@
 		                            </div>
 		                            <div class="form-bottom">
 				                    	<div class="form-group">
-				                    		<label class="sr-only" for="form-facebook">Password</label>
-				                        	<input type="password" name="form-facebook" placeholder="Password..." class="form-facebook form-control" id="form-facebook">
+				                    		<label class="sr-only" for="password">Password</label>
+				                        	<input type="password" name="password" placeholder="Password..." class="form-facebook form-control" id="form-facebook">
 				                        </div>
 				                        <div class="form-group">
-				                        	<label class="sr-only" for="form-twitter">Password Confirm</label>
-				                        	<input type="password" name="form-twitter" placeholder="Password Confirm..." class="form-twitter form-control" id="form-twitter">
+				                        	<label class="sr-only" for="password_confirm">Password Confirm</label>
+				                        	<input type="password" name="password_confirm" placeholder="Password Confirm..." class="form-twitter form-control" id="form-twitter">
 				                        </div>
 				                        <button type="button" class="btn btn-previous">Previous</button>
                                         <button type="button" class="btn btn-clear">Clear</button>

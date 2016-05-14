@@ -12,12 +12,12 @@ This is a project for NUS 2016 summer Orbital Program
     <div class="container"></div>
     ```
 
-    * the class name in html should also follow JAVA convention (camelCase), while attribute "id" and "name" should be treated like variable in JAVA convention     
+    * the class name in html should also follow JAVA convention (camelCase), while attribute "id" and "name" should use lower-case letters seperated with underscore "_"
     ```html
     <div class= "FileViewer">
         <div class="Page">     
-            <img id="firstPagePicture" src="">
-            <iframe name="firstPageIframe"></iframe>
+            <img id="first_page_picture" src="">
+            <iframe name="first_page_iframe"></iframe>
         </div>
     </div>
     ```
