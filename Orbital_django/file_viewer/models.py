@@ -6,4 +6,3 @@ from home import models as home_models
 
 class Comment(models.Model):
     post_time = models.DateTimeField()
-    commenter = models.ForeignKey(home_models.User)

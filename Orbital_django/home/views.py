@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+
+# for sending verification using e-mail
+from django.core.mail import EmailMessage
+
 import models
-
-
-# Create your views here.
 
 
 def display_home_page(request):
@@ -25,8 +26,13 @@ def handle_submission(request):
         if post_result_dic.__contains__("email_address"):
             new_user.set_email_address(post_result_dic["email_address"])
 
+            # send verification code
+            verification_code = "why fucking cannot send"
+            verification_email = EmailMessage("verification code", verification_code, "obitoonepatchman@gmail.com", [post_result_dic["email_address"]])
+            # verification_email.send(fail_silently = False)
+
     if post_result_dic.__contains__("password"):
         new_user.set_password(post_result_dic["password_confirm"])
-        new_user.save()
+        # new_user.save()
 
     return HttpResponse()

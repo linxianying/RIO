@@ -182,61 +182,35 @@
 		                            <div class="form-bottom">
 				                    	<div class="form-group">
 				                    		<label class="sr-only" for="password">Password</label>
-				                        	<input type="password" name="password" placeholder="Password..." class="form-facebook form-control" id="pw1">
+				                        	<input type="password" name="password" placeholder="Password..." class="form-facebook form-control">
 				                        </div>
 				                        <div class="form-group">
 				                        	<label class="sr-only" for="password_confirm">Password Confirm</label>
-				                        	<input type="password" name="password_confirm" placeholder="Password Confirm..." class="form-twitter form-control" id="pw2" onkeyup="validate()"/><span id="tishi"></span>
+				                        	<input type="password" name="password_confirm" placeholder="Password Confirm..." class="form-twitter form-control">
+                                            <span id="message"></span>
 				                        </div>
 				                        <button type="button" class="btn btn-previous">Previous</button>
                                         <button type="button" class="btn btn-clear" id = "clear">Clear</button>
-				                        <button type="submit" class="btn" id = "submit">Sign me up!</button>
+				                        <button type="submit" class="btn" id = "sign_me_up_button">Sign me up!</button>
 				                    </div>
 			                    </fieldset>
 		                    </form>
-		                    <script>
-          						function validate() {
-              						var pw1 = document.getElementById("pw1").value;
-              						var pw2 = document.getElementById("pw2").value;
-              						if(pw2.length < 6){
-              							document.getElementById("tishi").innerHTML="<font color='red'>Password must be longer than or equal to 6 digts.</font>";
-                						document.getElementById("submit").disabled = true;
-              						}
-              						else if(! /^(?=.*[a-z])[a-z0-9]+/ig.test(pw2)){
-              							document.getElementById("tishi").innerHTML="<font color='red'>Password may contain only letters or numbers.</font>";
-                						document.getElementById("submit").disabled = true;
-              						}
-              						else if(pw1 == pw2) {
-                  						document.getElementById("tishi").innerHTML="<font color='green'>Password confirmed.</font>";
-                  						document.getElementById("submit").disabled = false;
-              						} else {
-                  						document.getElementById("tishi").innerHTML="<font color='red'>Passwords mismatch.</font>";
-                						document.getElementById("submit").disabled = true;
-              						}
-          						}
-      						</script>
-		                    
                         </div>
                     </div>
                 </div>
             </div>
-            
         </div>
 
         <footer class="footer">
             <p>© copyright.</p>
         </footer>
 
-
         <!-- Javascript -->
         <script src="/static/assets/js/jquery.backstretch.min.js"></script>
         <script src="/static/assets/js/retina-1.1.0.min.js"></script>
         <script src="/static/assets/js/scripts.js"></script>
-        
         <!--[if lt IE 10]>
             <script src="assets/js/placeholder.js"></script>
         <![endif]-->
-
     </body>
-
 </html>
