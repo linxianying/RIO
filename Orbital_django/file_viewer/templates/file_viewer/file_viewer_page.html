@@ -43,9 +43,9 @@
 
         <div id="wrapper">
             <div id="fileViewer">
-                <img class="Page" src="media/test_images/932-01.jpg"> <br>
-                <img class="Page" src="media/test_images/932-02.jpg"> <br>
-                <img class="Page" src="media/test_images/932-03.jpg"> <br>
+                {% for page in pages %}
+                    <img class="Page" src={{ page }}> <br>
+                {% endfor %}
             </div>
 
             <div id="commentsViewer">
