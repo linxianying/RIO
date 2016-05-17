@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!--BOOTSTRAP CDN-->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <!--JQUERY CDN-->
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.3.min.js" type="text/javascript"></script>
+    
+    <style type="text/css">
+         nav {
+            background-color: #5CACEE;
+            padding-top: 0.8cm;
+            padding-bottom: 0.8cm;
+         }
+         nav label {
+            color: white;
+         }
+
+    </style>
+</head>
+
+<body>
+    <h1>
+        hello! {{ current_user.nickname }}
+    </h1>
+    <div class="container">
+        <nav class="navbar row">
+            <form action = "/user_dashboard/handle_log_out" method = "post" class="form-inline col-md-5 col-md-offset-7">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-default">log out</button>
+            </form>
+            <form action = "" method = "post" class="form-inline col-md-5 col-md-offset-7">
+                {% csrf_token %}
+                <input name = "file_upload" type="file" class="form-control input-sm">
+            </form>
+        </nav>
+    </div>
+</body>
+</html>

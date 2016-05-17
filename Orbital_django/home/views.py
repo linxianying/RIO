@@ -7,6 +7,8 @@ from django.core.mail import EmailMessage
 # for log in verification
 from django.contrib.auth import authenticate, login
 
+from django.shortcuts import redirect
+
 import models
 import random
 
@@ -22,13 +24,11 @@ def display_sign_up_page(request):
 def handle_log_in(request):
     input_email_address = request.POST['email_address']
     input_password = request.POST['password']
-    print input_email_address
-    print input_password
-    user = authenticate(username = input_email_address, password = input_password) # need to rewrite authenticate because this default authenticate use the User in AUTHENTICATION AND AUTHORIZATION rathen than in HOME
+    user = authenticate(input_username = input_email_address, input_password = input_password) # need to rewrite authenticate because this default authenticate use the User in AUTHENTICATION AND AUTHORIZATION rathen than in HOME
     if user is not None:
         if user.is_active:
             login(request, user)
-            return HttpResponse("<h1>you are logged in</h1>")
+            return redirect("user_dashboard")
         else:
             return HttpResponse("<h1>your account is not active</h1>")
     else:
@@ -38,7 +38,7 @@ def handle_log_in(request):
 new_user = models.User()
 
 
-def handle_submission(request):
+def handle_sign_up(request):
     post_result_dic = request.POST
 
     if post_result_dic.__contains__("username"):

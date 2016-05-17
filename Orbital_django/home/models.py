@@ -18,7 +18,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ["nickname", "email_address", "password"]  # (*)
     is_active = True  # (*)
     # temporarily just make it True,
-    # in the future may use how long this user has not loged in
+    # in the future may use how long this user has not logged in
     # to decide whether this account is active or not
 
     def get_full_name(self):  # (*)
@@ -39,4 +39,14 @@ class User(AbstractBaseUser):
         return self.get_full_name()
 
 
+    # the following are required when i use admin to see the data. at present, i do not know why they are needed and their mechanism
+    def is_superuser(self):
+        return True
+    def is_staff(self):
+        return True
 
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True

@@ -26,4 +26,7 @@ urlpatterns = [
 
     # app: file_viewer
     url(r'^file_viewer/', include('file_viewer.urls')),
+
+    # app: user_dashboard
+    url(r'^user_dashboard/', include('user_dashboard.urls')),
 ]

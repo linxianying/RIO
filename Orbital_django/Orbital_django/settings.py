@@ -38,6 +38,7 @@ EMAIL_USE_TLS = True
 INSTALLED_APPS = [
     'home',
     'file_viewer',
+    'user_dashboard',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -108,6 +109,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'home.customed_backend.CustomedBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SESSION_ENGINE = "django.contrib.sessions.backends.file"
+SESSION_FILE_PATH = os.path.join(BASE_DIR, 'temp_session')
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
