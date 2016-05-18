@@ -26,18 +26,27 @@
 </head>
 
 <body>
-    <h1>
-        hello! {{ current_user.nickname }}
-    </h1>
+    <h1> hello! {{ current_user.nickname }}</h1>
+    <h2> {{ current_user.get_full_name }} </h2>
+
+    <ol>
+        {% for file in current_user.file_set.all %}
+        <li><p>{{ file.file_field.name }}</p></li>
+        {% endfor %}
+    </ol>
+
+
     <div class="container">
         <nav class="navbar row">
             <form action = "/user_dashboard/handle_log_out" method = "post" class="form-inline col-md-5 col-md-offset-7">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-default">log out</button>
             </form>
-            <form action = "" method = "post" class="form-inline col-md-5 col-md-offset-7">
+
+            <form enctype="multipart/form-data" action = "/user_dashboard/handle_file_upload" method = "post" class="form-inline col-md-5 col-md-offset-7">
                 {% csrf_token %}
                 <input name = "file_upload" type="file" class="form-control input-sm">
+                <button type="submit" class="btn btn-sm btn-default">upload</button>
             </form>
         </nav>
     </div>
