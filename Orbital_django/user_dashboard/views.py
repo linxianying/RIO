@@ -10,15 +10,15 @@ def handle_log_out(request):
 
 
 def handle_file_upload(request):
-    user = get_user(request)
+    user = get_user(request)  # get the current user who is logged in and sends this request
 
-    file_instance = models.File()
-    file_instance.owner = user
-    file_instance.file_field = request.FILES["file_upload"]
+    document = models.Document()  # create a empty Document instance
+    document.owner = user  # set the owner
+    document.file_field = request.FILES["file_upload"]  # set the file_field
 
-    file_instance.save()
+    document.save()  # save this document to the database
 
-    user.file_set.add(file_instance)
+    user.document_set.add(document)  # add this document to the user's document_set
     return redirect("user_dashboard")
 
 

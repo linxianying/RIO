@@ -38,10 +38,11 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.get_full_name()
 
-
-    # the following are required when i use admin to see the data. at present, i do not know why they are needed and their mechanism
+    # the following are required when i use admin to see the data.
+    # at present, i do not know why they are needed and their mechanism
     def is_superuser(self):
         return True
+
     def is_staff(self):
         return True
 

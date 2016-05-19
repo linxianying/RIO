@@ -27,13 +27,7 @@
 
 <body>
     <h1> hello! {{ current_user.nickname }}</h1>
-    <h2> {{ current_user.get_full_name }} </h2>
-
-    <ol>
-        {% for file in current_user.file_set.all %}
-        <li><p>{{ file.file_field.name }}</p></li>
-        {% endfor %}
-    </ol>
+    </br>
 
 
     <div class="container">
@@ -50,5 +44,16 @@
             </form>
         </nav>
     </div>
+    </br>
+    <h3>your detailed information</h3>
+    <h4> {{ current_user.get_full_name }} </h4>
+    </br>
+    <h3>the list of files you have uploaded</h3>
+    <ol>
+        {% for file in current_user.document_set.all %}
+        <li><p>{{ file.file_field.name }}</p></li>
+        {% endfor %}
+    </ol>
+
 </body>
 </html>
