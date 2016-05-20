@@ -51,7 +51,13 @@
     <h3>the list of files you have uploaded</h3>
     <ol>
         {% for file in current_user.document_set.all %}
-        <li><p>{{ file.file_field.name }}</p></li>
+        <form method="post" action="/file_viewer/">
+            {% csrf_token %}
+            <li>
+                {{ file.file_field.name }}
+                <button type="submit" name="document_id" value={{ file.id }}>open</button>
+            </li>
+        </form>
         {% endfor %}
     </ol>
 

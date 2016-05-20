@@ -3,6 +3,7 @@
 # there will be many unpredictable potential error
 # besides, it seems that os.path.join will automatically create folder
 # when the specified folder does not exist, i need to further check whether this is true
+# checked on 2016/5/20 seems false
 
 import os # for local file operation
 import zipfile # for zip file operation
