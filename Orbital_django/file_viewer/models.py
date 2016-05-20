@@ -27,9 +27,9 @@ def delete_local_file(sender, instance, **kwargs):
     file_location = instance.file_field.name
 
     file_local_location = instance.file_field.storage.path(instance.file_field)
-    file_dirname, file_name_and_extension = os.path.split(file_local_location)
+    file_local_dirname, file_name_and_extension = os.path.split(file_local_location)
     file_name, extension = file_name_and_extension.split(".")
-    associated_folder_location = os.path.join(file_dirname, file_name)
+    associated_folder_local_location = os.path.join(file_local_dirname, file_name)
     type_level_dir_name = os.path.dirname(file_local_location)
 
     # instance.file_field.storage will return an instance of Storage' subclass,
@@ -39,8 +39,8 @@ def delete_local_file(sender, instance, **kwargs):
     instance.file_field.storage.delete(file_location)
 
     # delete associate image folder
-    if os.path.isdir(associated_folder_location):
-        shutil.rmtree(associated_folder_location)
+    if os.path.isdir(associated_folder_local_location):
+        shutil.rmtree(associated_folder_local_location)
 
     # if the type-level folder such as folder named "doc" or "pdf" is empty
     # that is, if the user does not have documents of this type

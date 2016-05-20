@@ -22,6 +22,12 @@ def handle_file_upload(request):
     return redirect("user_dashboard")
 
 
+def handle_delete(request):
+    document = models.Document.objects.get(id=int(request.POST["document_id"]))
+    document.delete()
+    return redirect("user_dashboard")
+
+
 def display_user_dashboard(request):
     current_user = get_user(request)
     return render(request, "user_dashboard/user_dashboard_page.html", {"current_user": current_user})

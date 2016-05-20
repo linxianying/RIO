@@ -51,13 +51,17 @@
     <h3>the list of files you have uploaded</h3>
     <ol>
         {% for file in current_user.document_set.all %}
-        <form method="post" action="/file_viewer/">
-            {% csrf_token %}
-            <li>
+        <li>
+            <form method="post" action="/file_viewer/" style="display: inline-block;">
+                {% csrf_token %}
                 {{ file.file_field.name }}
                 <button type="submit" name="document_id" value={{ file.id }}>open</button>
-            </li>
-        </form>
+            </form>
+            <form method="post" action="/user_dashboard/handle_delete" style="display: inline-block;">
+                {% csrf_token %}
+                <button type="submit" name="document_id" value={{ file.id }}>delete</button>
+            </form>
+        </li>
         {% endfor %}
     </ol>
 
