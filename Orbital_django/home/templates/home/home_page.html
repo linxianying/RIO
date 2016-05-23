@@ -13,14 +13,71 @@
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.3.min.js" type="text/javascript"></script>
     
     <style type="text/css">
-         nav {
-            background-color: #5CACEE;
-            padding-top: 0.8cm;
-            padding-bottom: 0.8cm;
-         }
-         nav label {
-            color: white;
-         }
+    nav {
+        background-color: #5CACEE;
+        padding-top: 0.8cm;
+        padding-bottom: 0.8cm;
+    }
+    nav label {
+        color: white;
+    }
+
+    img{
+        width:100%;
+    }
+
+    h1,h2{
+        color:black;
+        text-align: center;
+        vertical-align: center;
+    }
+    h3{
+        color: white;
+        text-align: center;
+    }
+    button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 16px 56px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 18px;
+        margin: 4px 2px;
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+    .button2 {
+        background-color: white; 
+        color: #008CB0; 
+        border: 2px solid #008CBA;
+    }
+
+    .button2:hover {
+        background-color: #008CBA;
+        color: white;
+    }
+    .button:after {
+        content: "";
+        background: #008CBA;
+        display: block;
+        position: absolute;
+        padding-top: 300%;
+        padding-left: 350%;
+        margin-left: -20px!important;
+        margin-top: -120%;
+        opacity: 0;
+        transition: all 0.8s
+    }
+
+    .button:active:after {
+        padding: 0;
+        margin: 0;
+        opacity: 1;
+        transition: 0s
+    }
 
     </style>
 </head>
@@ -34,6 +91,25 @@
                 <input name = "password" type="password" class="form-control input-sm" placeholder="Password">
                 <button type="submit" class="btn btn-sm btn-default">log in</button>
             </form>
+        </nav>
+    </div>
+    <div id ="content">
+        <div margin-left="auto" margin-right="auto" text-align="center">
+            <h1>Project Name</h1>
+            <h2>An online platform for you to share</h2>
+            <h2>thoughts with the world.</h2>
+            <h2>Do not have an account yet?</h2>
+            <div class = "col-md-offset-5">
+                <a href="http://127.0.0.1:8000/sign_up"><button class="button2">Sign Up Now!</button></a>
+            </div>
+            <img src="http://2.bp.blogspot.com/-ML0xC1DZTxI/VjdZuWXsIsI/AAAAAAAAIlU/WhbrTec6Y08/s1600/OPenBook.jpg">
+        </div>
+    </div>
+    <div class="container">
+        <nav class = "navbar row">
+            <div class = "col-md-5 col-md-offset-7">
+            <h3 color="white">Copyright@onepatchman, 2016</h3>
+            </div>
         </nav>
     </div>
 </body>
