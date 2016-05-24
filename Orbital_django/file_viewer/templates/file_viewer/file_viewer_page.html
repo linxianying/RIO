@@ -19,7 +19,7 @@
                 border-width: 1px;
                 overflow: auto;
             }
-            #resizeButton {
+            #resize_button, #comment_button {
                 margin-right: 18px;
                 float: right;
             }
@@ -31,11 +31,22 @@
 
         <!--JQUERY CDN-->
         <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.3.min.js" type="text/javascript"></script>
+
+        <!--BOOTSTRAP CDN-->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+        <script src="/static/js/file_viewer_script.js"></script>
     </head>
     
     <body>
         <div id="navbar">
-            <div id="resizeButton">
+            <button type="button" id="comment_button" data-toggle="modal" data-target="#comment_modal">
+                comments
+            </button>
+            <div id="resize_button">
                 <button type="button" id="buttonForLarger">+</button>
                 <button type="button" id="buttonForSmaller">-</button>
             </div>
@@ -60,68 +71,25 @@
                 <h1>wocao</h1>
             </div>
 
-            <div style="float: left; border-style: solid; border-width: 1px; overflow: auto; height: 240px; width: 380px;">
-                {% for comment in document.comment_set.all %}
-                    <p> {{ comment.content|safe }} </p>
-                    <h5> {{ comment.commenter }} </h5>
-                    <h5> {{ comment.post_time }} </h5>
-                {% endfor %}
-                <form id="comment_form">
-                    <input type="text" name="comment_content">
-                    <!--i use ajax to submit instead of using submit button-->
-                    <button id="submit_button" type="button" name="document_id" value={{ document.id }}>comment</button>
-                </form>
-            </div>
+            <div class="modal fade" id="comment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal_content">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
 
+                            <div class="modal-body" id="comment_update_div">
+                                {% include "file_viewer/comment_viewer_page.html" %}
+                            </div>
+
+                            <div class="modal-footer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
-
-        <script type="text/javascript">
-
-            $("#comment_form").children("button").click(function() {
-                $.ajax({
-                    type: "POST",
-                    url: "file_viewer",
-                    data: {
-                        csrfmiddlewaretoken: {{ csrf_token }},
-                        comment_content: $("input[name='comment_content']").val(),
-                        document_id: $("botton[name='document_id']").val(),
-                    },
-                    success: function() {
-                        alert("nice");
-                    },
-                })
-            });
-
-            $("#buttonForLarger").click(function(){
-                $(".Page").css("width", parseInt($(".Page").css("width")) + 80 + "px");         
-            });
-            $("#buttonForSmaller").click(function(){
-                $(".Page").css("width", parseInt($(".Page").css("width")) - 80 + "px");         
-            });
-
-            $(document).ready(function(){
-                //设置wrapper的高度
-                $("#wrapper").css("height", document.body.clientHeight - 24 + "px"); //jquery的css方法既可以设置css内容又可以获取css内容
-                //设置fileViewer的高度和宽度
-                $("#fileViewer").css("height", parseInt($("#wrapper").css("height")) + "px"); 
-                $("#fileViewer").css("width", parseInt($("#wrapper").css("width")) * 0.6 + "px"); //jquery的css方法获得的是字符串，用js的parseInt获取数值
-                //设置commentsViewer的高度和宽度
-                $("#commentsViewer").css("height", parseInt($("#wrapper").css("height")) * 0.6 + "px"); 
-                $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
-                //设置文档的大小
-                $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px"); 
-            });
-            $(window).resize(function(){
-                $("#wrapper").css("height", document.body.clientHeight - 24 + "px");
-                $("#fileViewer").css("height", parseInt($("#wrapper").css("height")) + "px"); 
-                $("#fileViewer").css("width", parseInt($("#wrapper").css("width")) * 0.6 + "px");
-                $("#commentsViewer").css("height", parseInt($("#wrapper").css("height")) * 0.6 + "px"); 
-                $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
-                //设置文档的大小
-                $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px"); 
-            });
-        </script>
     </body>
 </html>

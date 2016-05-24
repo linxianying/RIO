@@ -1,10 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 import os
 import zipfile
 from wand.image import Image
 import models
 from django.contrib.auth import get_user
-from django.http import HttpResponse
 
 
 def display_file_viewer_page(request):
@@ -18,8 +17,7 @@ def display_file_viewer_page(request):
         comment.save()
         document.comment_set.add(comment)
 
-        return redirect("user_dashboard")
-        # return HttpResponse()
+        return render(request, "file_viewer/comment_viewer_page.html", {"document": document})
 
     else:
         # zip file
