@@ -6,7 +6,7 @@
         <button type="button" name="document_id" value={{ document.id }}>comment</button>
     </form>
 
-    {% for comment in document.comment_set.all %}
+    {% for comment in comments %}
     <hr>
     <blockquote>
         <p> {{ comment.content|safe }} </p>

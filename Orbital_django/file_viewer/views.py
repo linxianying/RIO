@@ -17,7 +17,12 @@ def display_file_viewer_page(request):
         comment.save()
         document.comment_set.add(comment)
 
-        return render(request, "file_viewer/comment_viewer_page.html", {"document": document})
+        context = {
+            "document": document,
+            "comments": document.comment_set.order_by("-post_time"),
+        }
+
+        return render(request, "file_viewer/comment_viewer_page.html", context)
 
     else:
         # zip file
@@ -66,7 +71,8 @@ def display_file_viewer_page(request):
 
         context = {
             "document": document,
-            "pages": pages
+            "pages": pages,
+            "comments": document.comment_set.order_by("-post_time")
         }
 
         return render(request, "file_viewer/file_viewer_page.html", context)
