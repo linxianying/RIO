@@ -1,4 +1,16 @@
 
+function markdown() {
+    $(".content-markdown").each(function() {
+        $(this).html(marked($(this).text()));
+    });
+}
+
+
+$(document).ready(function() {
+    markdown();
+});
+
+
 $(document).ready(function() {
 
     $("#buttonForLarger").click(function () {

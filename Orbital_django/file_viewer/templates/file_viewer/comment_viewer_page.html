@@ -3,13 +3,13 @@
     <form id="comment_form">
         <textarea name="comment_content" class="form-control" rows="2" style="resize: vertical"></textarea>
         <!--i use ajax to submit instead of using submit button-->
-        <button type="button" name="document_id" value={{ document.id }}>comment</button>
+        <button style="margin-top: 8px; float: right;";type="button" class="btn btn-info" name="document_id" value={{ document.id }}> post comment</button>
     </form>
 
     {% for comment in comments %}
     <hr>
     <blockquote>
-        <p> {{ comment.content|safe }} </p>
+        <div class="content-markdown"> {{ comment.content|safe }} </div>
         <button class="glyphicon glyphicon-thumbs-up"></button>{{ comment.num_like }}
         <footer> {{ comment.commenter.nickname }} | {{ comment.post_time }} </footer>
     </blockquote>
@@ -30,6 +30,7 @@ $("#comment_form").children("button[name='document_id']").click(function () {
         },
         success: function (data) {
             $("#comment_update_div").html(data);
+            markdown();
         },
     })
 });
