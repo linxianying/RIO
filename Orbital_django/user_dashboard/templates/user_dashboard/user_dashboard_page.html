@@ -13,57 +13,137 @@
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.3.min.js" type="text/javascript"></script>
     
     <style type="text/css">
-         nav {
-            background-color: #5CACEE;
-            padding-top: 0.8cm;
-            padding-bottom: 0.8cm;
-         }
-         nav label {
-            color: white;
-         }
+
+    nav {
+        background-color: #5CACEE;
+        padding-top: 0.8cm;
+        padding-bottom: 0.8cm;
+    }
+    nav label {
+        color: white;
+    }
+
+    .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+    .button2 {
+        background-color: white; 
+        color: #008CB0; 
+        border: 2px solid #008CBA;
+    }
+
+    .button2:hover {
+        background-color: #008CBA;
+        color: white;
+    }
+    .button:after {
+        content: "";
+        background: #008CBA;
+        display: block;
+        position: absolute;
+        padding-top: 300%;
+        padding-left: 350%;
+        margin-left: -20px!important;
+        margin-top: -120%;
+        opacity: 0;
+        transition: all 0.8s
+    }
+
+    .button:active:after {
+        padding: 0;
+        margin: 0;
+        opacity: 1;
+        transition: 0s
+    }
+
+    h3,h4 {
+        text-align: center;
+        font-family: Impact, Charcoal, sans-serif;
+        font-style: bold;
+    }
+
+    #list-files{
+        background-color: #008CBA;
+        border-bottom: #00001a;
+    }
+
+    p{
+        color: white;
+        font-size: 30px;
+        font-family: Impact, Charcoal, sans-serif;
+        text-align: auto;
+    }
 
     </style>
 </head>
 
 <body>
-    <h1> hello! {{ current_user.nickname }}</h1>
-    </br>
 
 
-    <div class="container">
-        <nav class="navbar row">
-            <form action = "/user_dashboard/handle_log_out" method = "post" class="form-inline col-md-5 col-md-offset-7">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-default">log out</button>
-            </form>
-
-            <form enctype="multipart/form-data" action = "/user_dashboard/handle_file_upload" method = "post" class="form-inline col-md-5 col-md-offset-7">
-                {% csrf_token %}
-                <input name = "file_upload" type="file" class="form-control input-sm">
-                <button type="submit" class="btn btn-sm btn-default">upload</button>
-            </form>
-        </nav>
+<div class="container">
+    <nav class="navbar row">
+        <div class = "row">
+            <div class = "col-md-4">
+                <!-- Place for project logo -->
+            </div>
+            <div class = "col-md-7 col-md-offset-4"><p>Hello! {{ current_user.nickname }}</p></div>
+        <form action = "/user_dashboard/handle_log_out" method = "post" class="form-inline col-md-1 col-md-offset-11">
+            {% csrf_token %}<button type="submit" class="button2">Log Out</button>
+        </form>
     </div>
-    </br>
-    <h3>your detailed information</h3>
-    <h4> {{ current_user.get_full_name }} </h4>
-    </br>
-    <h3>the list of files you have uploaded</h3>
-    <ol>
-        {% for file in current_user.document_set.all %}
-        <li>
-            <form method="get" action="/file_viewer/" style="display: inline-block;">
-                {% csrf_token %}
-                {{ file.file_field.name }}
-                <button type="submit" name="document_id" value={{ file.id }}>open</button>
-            </form>
-            <form method="post" action="/user_dashboard/handle_delete" style="display: inline-block;">
-                {% csrf_token %}
-                <button type="submit" name="document_id" value={{ file.id }}>delete</button>
-            </form>
-        </li>
-        {% endfor %}
-    </ol>
+    </nav>
+
+    <form enctype="multipart/form-data" action = "/user_dashboard/handle_file_upload" method = "post" class="form-inline col-md-5 col-md-offset-7">
+        {% csrf_token %}
+        <input name = "file_upload" type="file" class="form-control input-sm">
+        <button type="submit" class="button2">upload</button>
+    </form>
+    
+</div>
+</br>
+<div class="col-md-5">
+<h3>{{ current_user.nickname }}'s Profile</h3>
+<h4> {{ current_user.get_full_name }} </h4>
+</br>
+</div>
+
+<div class = "col-md-7 col-md-offset-5">
+<h3>My Documents</h3>
+<ol>
+    {% for file in current_user.document_set.all %}
+    <li>
+        <div class = "col-md-11" id = "list-files">
+            <tbody>
+            <tr>
+            <form method="get" action="/file_viewer/" style="display: inline-block; font-family: arial; color: white">
+            <td scope = "col">
+            {% csrf_token %} {{ file.file_field.name }}</td>
+            <td><button type="submit" name="document_id" value={{ file.id }} class = "button2">open</button></td>
+        </form>
+        <td>
+        <form method="post" action="/user_dashboard/handle_delete" style="display: inline-block;">
+            {% csrf_token %}
+            <button type="submit" name="document_id" class = "button2" value={{ file.id }}>delete</button>
+        </form>
+    </td>
+    </tr>
+</tbody>
+    </div>
+    </li>
+    {% endfor %}
+</ol>
+</div>
 
 </body>
 </html>
