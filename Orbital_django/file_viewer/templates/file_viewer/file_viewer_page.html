@@ -59,10 +59,41 @@
                 <h1>wocao</h1>
                 <h1>wocao</h1>
             </div>
+
+            <div style="float: left; border-style: solid; border-width: 1px; overflow: auto; height: 240px; width: 380px;">
+                {% for comment in document.comment_set.all %}
+                    <p> {{ comment.content|safe }} </p>
+                    <h5> {{ comment.commenter }} </h5>
+                    <h5> {{ comment.post_time }} </h5>
+                {% endfor %}
+                <form id="comment_form">
+                    <input type="text" name="comment_content">
+                    <!--i use ajax to submit instead of using submit button-->
+                    <button id="submit_button" type="button" name="document_id" value={{ document.id }}>comment</button>
+                </form>
+            </div>
+
+
         </div>
 
 
         <script type="text/javascript">
+
+            $("#comment_form").children("button").click(function() {
+                $.ajax({
+                    type: "POST",
+                    url: "file_viewer",
+                    data: {
+                        csrfmiddlewaretoken: {{ csrf_token }},
+                        comment_content: $("input[name='comment_content']").val(),
+                        document_id: $("botton[name='document_id']").val(),
+                    },
+                    success: function() {
+                        alert("nice");
+                    },
+                })
+            });
+
             $("#buttonForLarger").click(function(){
                 $(".Page").css("width", parseInt($(".Page").css("width")) + 80 + "px");         
             });

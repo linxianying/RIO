@@ -17,6 +17,9 @@ class Document(models.Model):
     file_field = models.FileField(upload_to = upload_to)
     owner = models.ForeignKey(home_models.User)  # many File to one User
 
+    def __str__(self):
+        return self.file_field.name
+
 
 # before the Model.delete() and QuerySet.delete() are called, this method will execute first
 @receiver(models.signals.pre_delete, sender = Document)
@@ -59,7 +62,7 @@ class Comment(models.Model):
     post_time = models.DateTimeField(auto_now=False, auto_now_add=True)
     commenter = models.ForeignKey(home_models.User)  # many Comment to one User
     document_this_comment_belongs = models.ForeignKey(Document)
-    left_up_position_x = models.FloatField()
-    left_up_position_y = models.FloatField()
-    right_bottom_position_x = models.FloatField()
-    right_bottom_position_y = models.FloatField()
+    content = models.TextField()
+
+    def __str__(self):
+        return self.content

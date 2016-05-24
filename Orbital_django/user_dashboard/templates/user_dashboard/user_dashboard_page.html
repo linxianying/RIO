@@ -52,7 +52,7 @@
     <ol>
         {% for file in current_user.document_set.all %}
         <li>
-            <form method="post" action="/file_viewer/" style="display: inline-block;">
+            <form method="get" action="/file_viewer/" style="display: inline-block;">
                 {% csrf_token %}
                 {{ file.file_field.name }}
                 <button type="submit" name="document_id" value={{ file.id }}>open</button>
