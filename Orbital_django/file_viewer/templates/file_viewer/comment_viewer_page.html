@@ -3,7 +3,7 @@
     <form id="comment_form">
         <textarea name="comment_content" class="form-control" rows="2" style="resize: vertical"></textarea>
         <!--i use ajax to submit instead of using submit button-->
-        <button style="margin-top: 8px; float: right;";type="button" class="btn btn-info" name="document_id" value={{ document.id }}> post comment</button>
+        <button style="margin-top: 8px; float: right;" type="button" class="btn btn-info" name="document_id" value={{ document.id }}> post comment</button>
     </form>
 
     {% for comment in comments %}
