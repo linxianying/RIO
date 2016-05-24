@@ -1,3 +1,19 @@
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 
 function markdown() {
     $(".content-markdown").each(function() {
@@ -8,10 +24,22 @@ function markdown() {
 
 $(document).ready(function() {
     markdown();
-});
 
-
-$(document).ready(function() {
+    $("#refresh_comment_button").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                operation: "refresh",
+                document_id: $("button[name='document_id']").val(),
+            },
+            success: function (data) {
+                $("#comment_update_div").html(data);
+                markdown();
+            },
+        })
+    });
 
     $("#buttonForLarger").click(function () {
         $(".Page").css("width", parseInt($(".Page").css("width")) + 80 + "px");

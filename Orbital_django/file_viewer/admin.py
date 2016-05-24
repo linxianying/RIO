@@ -8,9 +8,9 @@ class FileModelAdmin(admin.ModelAdmin):
     search_fields = ["file_field", "owner", "id"]
 
 class CommentModelAdmin(admin.ModelAdmin):
-    list_display = ["content", "document_this_comment_belongs", "commenter", "id"]
-    list_filter = ["content", "document_this_comment_belongs", "commenter", "id"]
-    search_fields = ["content", "document_this_comment_belongs", "commenter", "id"]
+    list_display = ["content", "document_this_comment_belongs", "commenter", "num_like", "id"]
+    list_filter = ["content", "document_this_comment_belongs", "commenter", "num_like", "id"]
+    search_fields = ["content", "document_this_comment_belongs", "commenter", "num_like", "id"]
 
 admin.site.register(models.Document, FileModelAdmin)
 admin.site.register(models.Comment, CommentModelAdmin)

@@ -4,25 +4,43 @@ import zipfile
 from wand.image import Image
 import models
 from django.contrib.auth import get_user
+from django.http import HttpResponse
 
 
 def display_file_viewer_page(request):
 
     if request.method == "POST":
-        document = models.Document.objects.get(id=int(request.POST["document_id"]))
-        comment = models.Comment()
-        comment.content = request.POST["comment_content"]
-        comment.commenter = get_user(request)
-        comment.document_this_comment_belongs = document
-        comment.save()
-        document.comment_set.add(comment)
+        if request.POST["operation"] == "like":
+            comment = models.Comment.objects.get(id=int(request.POST["comment_id"]))
+            comment.num_like += 1
+            comment.save()
+            return HttpResponse()
 
-        context = {
-            "document": document,
-            "comments": document.comment_set.order_by("-post_time"),
-        }
+        elif request.POST["operation"] == "refresh":
+            document = models.Document.objects.get(id=int(request.POST["document_id"]))
 
-        return render(request, "file_viewer/comment_viewer_page.html", context)
+            context = {
+                "document": document,
+                "comments": document.comment_set.order_by("-post_time"),
+            }
+
+            return render(request, "file_viewer/comment_viewer_page.html", context)
+
+        else:
+            document = models.Document.objects.get(id=int(request.POST["document_id"]))
+            comment = models.Comment()
+            comment.content = request.POST["comment_content"]
+            comment.commenter = get_user(request)
+            comment.document_this_comment_belongs = document
+            comment.save()
+            document.comment_set.add(comment)
+
+            context = {
+                "document": document,
+                "comments": document.comment_set.order_by("-post_time"),
+            }
+
+            return render(request, "file_viewer/comment_viewer_page.html", context)
 
     else:
         # zip file

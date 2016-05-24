@@ -3,14 +3,15 @@
     <form id="comment_form">
         <textarea name="comment_content" class="form-control" rows="2" style="resize: vertical"></textarea>
         <!--i use ajax to submit instead of using submit button-->
-        <button style="margin-top: 8px; float: right;" type="button" class="btn btn-info" name="document_id" value={{ document.id }}> post comment</button>
+        <button id="post_comment_button" type="button" class="btn btn-info" name="document_id" value="{{ document.id }}" style="margin-top: 8px; float: right;" > post comment</button>
     </form>
 
     {% for comment in comments %}
     <hr>
     <blockquote>
         <div class="content-markdown"> {{ comment.content|safe }} </div>
-        <button class="glyphicon glyphicon-thumbs-up"></button>{{ comment.num_like }}
+        <button name="comment_id" value="{{ comment.id }}" class="likeCommentButton glyphicon glyphicon-thumbs-up"></button>
+        <bold id="num_like">{{ comment.num_like }}</bold>
         <footer> {{ comment.commenter.nickname }} | {{ comment.post_time }} </footer>
     </blockquote>
     </hr>
@@ -19,19 +20,40 @@
 </div>
 
 <script>
-$("#comment_form").children("button[name='document_id']").click(function () {
-    $.ajax({
-        type: "POST",
-        url: "",
-        data: {
-            csrfmiddlewaretoken: "{{ csrf_token }}",
-            comment_content: $("textarea[name='comment_content']").val(),
-            document_id: $("button[name='document_id']").val(),
-        },
-        success: function (data) {
-            $("#comment_update_div").html(data);
-            markdown();
-        },
-    })
+$(document).ready(function() {
+    $("#post_comment_button").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                operation: "comment",
+                comment_content: $("textarea[name='comment_content']").val(),
+                document_id: $("button[name='document_id']").val(),
+            },
+            success: function (data) {
+                $("#comment_update_div").html(data);
+                markdown();
+            },
+        })
+    });
+
+    $(".likeCommentButton").click(function () {
+        var $this_button = $(this);
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                operation: "like",
+                comment_id: $this_button.val(),
+            },
+            success: function () {
+                var new_num = parseInt($this_button.next().text()) + 1;
+                $this_button.next().text(new_num.toString());
+            },
+        })
+    });
+
 });
 </script>
