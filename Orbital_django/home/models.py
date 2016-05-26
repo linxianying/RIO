@@ -16,7 +16,7 @@ class User(AbstractBaseUser):
     # pass fields inherited from super class
     level = models.IntegerField(default=0)
     is_member = models.BooleanField(default=False)
-    portrait = models.ImageField(upload_to = upload_to, blank = True, null = True)
+    portrait = models.ImageField(upload_to=upload_to, blank=True, null=True)
 
     @property
     def portrait_url(self):

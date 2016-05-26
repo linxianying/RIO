@@ -97,7 +97,7 @@
             <div class = "col-md-4">
                 <!-- Place for project logo -->
             </div>
-            <div class = "col-md-7 col-md-offset-4"><p>Hello! {{ current_user.nickname }}</p></div>
+            <div class = "col-md-7 col-md-offset-4"><p>Hello!{{ current_user.nickname }}</p></div>
             <form action = "/user_dashboard/handle_log_out" method = "post" class="form-inline col-md-1 col-md-offset-11">
                 {% csrf_token %}<button type="submit" class="button2">Log Out</button>
             </form>
@@ -116,6 +116,7 @@
 <br>
 <div class="col-md-5">
     <h3>{{ current_user.nickname }}'s Profile</h3>
+    <img src="{{ current_user.portrait_url }}" height="80" width="80">
     <h4> {{ current_user.get_full_name }} </h4>
     <br>
 </div>
