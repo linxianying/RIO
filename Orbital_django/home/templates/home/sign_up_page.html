@@ -105,15 +105,15 @@
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-3 form-box">
                             
-                        	<form role="form" action="/handle_sign_up" method="post" class="registration-form" target="for_submit_refresh_1">
+                        	<form role="form" action="/handle_sign_up" method="post" class="registration-form" target="for_submit_refresh">
                                 <div class="row">
-                                    <iframe name="for_submit_refresh_1" style="height: 0px; border: 0px;"></iframe>
+                                    <iframe name="for_submit_refresh" style="height: 0px; border: 0px;"></iframe>
                                 </div>
                                 {% csrf_token %}
                         		<fieldset>
 		                        	<div class="form-top">
 		                        		<div class="form-top-left">
-		                        			<h3>Step 1 / 3</h3>
+		                        			<h3>Step 1 / 2</h3>
 		                            		<p>Basic information:</p>
 		                        		</div>
 		                        		<div class="form-top-right">
@@ -129,21 +129,27 @@
                                             <label class="sr-only" for="email_address">Email address</label>
                                             <input type="email" name="email_address" placeholder="Email address..." class="form-first-name form-control" id="form-first-name">
                                         </div>
-                                        <button type="submit" class="btn btn-next">Next</button>
+                                        <div class="form-group">
+                                            <label class="sr-only" for="password">Password</label>
+                                            <input type="password" name="password" placeholder="Password..." class="form-facebook form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="sr-only" for="password_confirm">Password Confirm</label>
+                                            <input type="password" name="password_confirm" placeholder="Password Confirm..." class="form-twitter form-control">
+                                            <span id="message"></span>
+                                        </div>
+                                        <button id="next_button" type="submit" class="btn btn-next">Next</button>
                                         <button type="button" class="btn btn-clear">Clear</button>
 				                    </div>
 			                    </fieldset>
                             </form>
 			                    
-                            <form role="form" action="/handle_sign_up" method="post" class="registration-form" target="for_submit_refresh_2">
-			                    <div class="row">
-                                    <iframe name="for_submit_refresh_2" style="height: 0px; border: 0px;"></iframe>
-                                </div>
+                            <form role="form" class="registration-form">
                                 {% csrf_token %}
                                 <fieldset>
 		                        	<div class="form-top">
 		                        		<div class="form-top-left">
-		                        			<h3>Step 2 / 3</h3>
+		                        			<h3>Step 2 / 2</h3>
 		                            		<p>Check your email for the verification code:</p>
 		                        		</div>
 		                        		<div class="form-top-right">
@@ -154,45 +160,14 @@
 				                        <div class="form-group">
 				                        	<label class="sr-only" for="verification_code">Verification code</label>
 				                        	<input type="text" name="verification_code" placeholder="Verification code..." class="form-email form-control" id="form-email">
+                                            <span id="message2"></span>
 				                        </div>
-				                        <button type="button" class="btn btn-previous">Previous</button>
-				                        <button type="submit" class="btn btn-next">Next</button>
+				                        <button id="sign_me_up_button" type="button" class="btn btn">Sign me up</button>
                                         <button type="button" class="btn btn-clear">Clear</button>
 				                    </div>
 			                    </fieldset>
                             </form>
 			                 
-                            <form role="form" action="/handle_sign_up" method="post" class="registration-form" target="for_submit_refresh_3">
-			                    <div class="row">
-                                    <iframe name="for_submit_refresh_3" style="height: 0px; border: 0px;"></iframe>
-                                </div>
-                                {% csrf_token %}
-                                <fieldset>
-		                        	<div class="form-top">
-		                        		<div class="form-top-left">
-		                        			<h3>Step 3 / 3</h3>
-		                            		<p>Set your password:</p>
-		                        		</div>
-		                        		<div class="form-top-right">
-		                        			<i class="fa fa-unlock"></i>
-		                        		</div>
-		                            </div>
-		                            <div class="form-bottom">
-				                    	<div class="form-group">
-				                    		<label class="sr-only" for="password">Password</label>
-				                        	<input type="password" name="password" placeholder="Password..." class="form-facebook form-control">
-				                        </div>
-				                        <div class="form-group">
-				                        	<label class="sr-only" for="password_confirm">Password Confirm</label>
-				                        	<input type="password" name="password_confirm" placeholder="Password Confirm..." class="form-twitter form-control">
-                                            <span id="message"></span>
-				                        </div>
-				                        <button type="button" class="btn btn-previous">Previous</button>
-                                        <button type="button" class="btn btn-clear" id = "clear">Clear</button>
-				                        <button type="submit" class="btn" id = "sign_me_up_button">Sign me up!</button>
-				                    </div>
-			                    </fieldset>
-		                    </form>
                         </div>
                     </div>
                 </div>
