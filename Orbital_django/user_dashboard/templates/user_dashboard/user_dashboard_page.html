@@ -98,51 +98,58 @@
                 <!-- Place for project logo -->
             </div>
             <div class = "col-md-7 col-md-offset-4"><p>Hello! {{ current_user.nickname }}</p></div>
-        <form action = "/user_dashboard/handle_log_out" method = "post" class="form-inline col-md-1 col-md-offset-11">
-            {% csrf_token %}<button type="submit" class="button2">Log Out</button>
-        </form>
-    </div>
+            <form action = "/user_dashboard/handle_log_out" method = "post" class="form-inline col-md-1 col-md-offset-11">
+                {% csrf_token %}<button type="submit" class="button2">Log Out</button>
+            </form>
+        </div>
     </nav>
 
-    <form enctype="multipart/form-data" action = "/user_dashboard/handle_file_upload" method = "post" class="form-inline col-md-5 col-md-offset-7">
+    <form enctype="multipart/form-data" action = "/user_dashboard/handle_file_upload" method = "post" class="col-md-3 col-md-offset-7">
         {% csrf_token %}
-        <input name = "file_upload" type="file" class="form-control input-sm">
-        <button type="submit" class="button2">upload</button>
+        <input name = "file_upload" type="file" class="form-control input-sm" required="required">
+        <input name = "title" type="text" class="form-control input-sm" placeholder="title" required="required">
+        <button type="submit" class="button2" style="float: right">upload</button>
     </form>
     
 </div>
-</br>
+
+<br>
 <div class="col-md-5">
-<h3>{{ current_user.nickname }}'s Profile</h3>
-<h4> {{ current_user.get_full_name }} </h4>
-</br>
+    <h3>{{ current_user.nickname }}'s Profile</h3>
+    <h4> {{ current_user.get_full_name }} </h4>
+    <br>
 </div>
 
 <div class = "col-md-7 col-md-offset-5">
-<h3>My Documents</h3>
-<ol>
-    {% for file in current_user.document_set.all %}
-    <li>
-        <div class = "col-md-11" id = "list-files">
-            <tbody>
-            <tr>
-            <form method="get" action="/file_viewer/" style="display: inline-block; font-family: arial; color: white">
-            <td scope = "col">
-            {% csrf_token %} {{ file.file_field.name }}</td>
-            <td><button type="submit" name="document_id" value={{ file.id }} class = "button2">open</button></td>
-        </form>
-        <td>
-        <form method="post" action="/user_dashboard/handle_delete" style="display: inline-block;">
-            {% csrf_token %}
-            <button type="submit" name="document_id" class = "button2" value={{ file.id }}>delete</button>
-        </form>
-    </td>
-    </tr>
-</tbody>
-    </div>
-    </li>
-    {% endfor %}
-</ol>
+    <h3>My Documents</h3>
+    <ol>
+        {% for file in current_user.document_set.all %}
+        <li>
+            <div class = "col-md-11" id = "list-files">
+                <tbody>
+                    <tr>
+                        <form method="get" action="/file_viewer/" style="display: inline-block; font-family: arial; color: white">
+                            {% csrf_token %}
+                            <td scope = "col">
+                                {{ file.title }}
+                            </td>
+                            <td>
+                                <button type="submit" name="document_id" value={{ file.id }} class="button2">open</button>
+                            </td>
+                        </form>
+
+                        <td>
+                            <form method="post" action="/user_dashboard/handle_delete" style="display: inline-block;">
+                                {% csrf_token %}
+                                <button type="submit" name="document_id" class="button2" value={{ file.id }}>delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </div>
+        </li>
+        {% endfor %}
+    </ol>
 </div>
 
 </body>

@@ -14,7 +14,8 @@ def upload_to(instance, filename):
 
 
 class Document(models.Model):
-    file_field = models.FileField(upload_to = upload_to)
+    title = models.CharField(max_length=1028)
+    file_field = models.FileField(upload_to=upload_to)
     owner = models.ForeignKey(home_models.User)  # many File to one User
 
     def __str__(self):
@@ -22,7 +23,7 @@ class Document(models.Model):
 
 
 # before the Model.delete() and QuerySet.delete() are called, this method will execute first
-@receiver(models.signals.pre_delete, sender = Document)
+@receiver(models.signals.pre_delete, sender=Document)
 # "sender" and "**kwargs" are required though they are of no use here, do not delete them
 def delete_local_file(sender, instance, **kwargs):
     # get the location of the file to be deleted.

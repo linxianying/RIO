@@ -13,8 +13,10 @@ def handle_file_upload(request):
     user = get_user(request)  # get the current user who is logged in and sends this request
 
     document = models.Document()  # create a empty Document instance
+
     document.owner = user  # set the owner
     document.file_field = request.FILES["file_upload"]  # set the file_field
+    document.title = request.POST["title"]  # set the title
 
     document.save()  # save this document to the database
 

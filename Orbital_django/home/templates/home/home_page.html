@@ -87,8 +87,8 @@
         <nav class="navbar row">
             <form action = "/handle_log_in" method = "post" class="form-inline col-md-5 col-md-offset-7">
                 {% csrf_token %}
-                <input name = "email_address" type="email" class="form-control input-sm" placeholder="Email">
-                <input name = "password" type="password" class="form-control input-sm" placeholder="Password">
+                <input name = "email_address" type="email" class="form-control input-sm" placeholder="Email" required="required">
+                <input name = "password" type="password" class="form-control input-sm" placeholder="Password" required="required">
                 <button type="submit" class="btn btn-sm btn-default">log in</button>
             </form>
         </nav>

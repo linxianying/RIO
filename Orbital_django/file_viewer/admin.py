@@ -3,9 +3,9 @@ import models
 
 
 class FileModelAdmin(admin.ModelAdmin):
-    list_display = ["file_field", "owner", "id"]
-    list_filter = ["file_field", "owner", "id"]
-    search_fields = ["file_field", "owner", "id"]
+    list_display = ["title", "file_field", "owner", "id"]
+    list_filter = ["title", "file_field", "owner", "id"]
+    search_fields = ["title", "file_field", "owner", "id"]
 
 class CommentModelAdmin(admin.ModelAdmin):
     list_display = ["content", "document_this_comment_belongs", "commenter", "num_like", "id"]
