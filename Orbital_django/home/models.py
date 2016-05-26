@@ -3,12 +3,27 @@ from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 
 
+def upload_to(instance, filename):
+    name_without_extension, extension = filename.split(".")
+    # if a user with sign-in email = user@email.com uploads file name.png
+    # the file will be store at media/portrait/user@email.com/portrait.png
+    return '{0}/{1}/{2}.{3}'.format("portrait", instance.email_address, "portrait", extension)
+
+
 class User(AbstractBaseUser):
     nickname = models.CharField(max_length=254)
     email_address = models.EmailField(max_length=254)
     # pass fields inherited from super class
     level = models.IntegerField(default=0)
     is_member = models.BooleanField(default=False)
+    portrait = models.ImageField(upload_to = upload_to, blank = True, null = True)
+
+    @property
+    def portrait_url(self):
+        if self.portrait and hasattr(self.portrait, 'url'):
+            return self.portrait.url
+        else:
+            return "media/default_portrait.png"
 
     # the following fields and methods (*) are required our extended User class
     # so that it can use the same UserManager and other service just as the built in User class

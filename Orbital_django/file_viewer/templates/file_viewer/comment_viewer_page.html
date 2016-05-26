@@ -8,11 +8,15 @@
 
     {% for comment in comments %}
     <hr>
+
     <blockquote>
         <div class="content-markdown"> {{ comment.content|safe }} </div>
         <button name="comment_id" value="{{ comment.id }}" class="likeCommentButton glyphicon glyphicon-thumbs-up"></button>
         <bold id="num_like">{{ comment.num_like }}</bold>
-        <footer> {{ comment.commenter.nickname }} | {{ comment.post_time }} </footer>
+        <footer>
+            <img src="{{ comment.commenter.portrait_url }}" height="80" width="80">
+            {{ comment.commenter.nickname }} | {{ comment.post_time }}
+        </footer>
     </blockquote>
     </hr>
     {% endfor %}
