@@ -26,9 +26,10 @@ SECRET_KEY = 'x_@hrbr1i_-y+2e$c8swo7=4i12&60qep8)t4w4i6us%iu^kj+'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "obitoonepatchman@gmail.com"
-EMAIL_HOST_PASSWORD = "orbitalonepatchman"
+
+EMAIL_HOST = "smtp-mail.outlook.com"  # "smtp.gmail.com"
+EMAIL_HOST_USER = "obitoonepatchman@outlook.com"  # "obitoonepatchman@gmail.com"
+EMAIL_HOST_PASSWORD = "obito2016"  # "orbitalonepatchman"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 

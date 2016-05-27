@@ -1,6 +1,9 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.dispatch import receiver
+import os
+import shutil
 
 
 def upload_to(instance, filename):
@@ -23,7 +26,7 @@ class User(AbstractBaseUser):
         if self.portrait and hasattr(self.portrait, 'url'):
             return self.portrait.url[1:]
         else:
-            return "media/default_portrait.png"
+            return "media/portrait/default_portrait.png"
 
     # the following fields and methods (*) are required our extended User class
     # so that it can use the same UserManager and other service just as the built in User class
@@ -66,3 +69,17 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+
+@receiver(models.signals.pre_delete, sender=User)
+# "sender" and "**kwargs" are required though they are of no use here, do not delete them
+def delete_local_portrait(sender, instance, **kwargs):
+    # delete the local image files for this user's portrait
+    if instance.portrait and hasattr(instance.portrait, 'url'):
+        portrait = instance.portrait
+        img_local_location = portrait.storage.path(portrait)
+        img_local_dirname, file_name_and_extension = os.path.split(img_local_location)
+
+        if os.path.isdir(img_local_dirname):
+            shutil.rmtree(img_local_dirname)
+

@@ -64,7 +64,7 @@ class Comment(models.Model):
     commenter = models.ForeignKey(home_models.User)  # many Comment to one User
     document_this_comment_belongs = models.ForeignKey(Document)
     content = models.TextField()
-    num_like = models.IntegerField(default = 0)
+    num_like = models.IntegerField(default=0)
 
     def __str__(self):
         return self.content

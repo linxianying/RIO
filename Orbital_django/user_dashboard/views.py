@@ -42,6 +42,13 @@ def change_portrait(request):
     elif request.method == "POST":
         user = get_user(request)
 
+        # delete the local image file for the old portrait
+        if user.portrait and hasattr(user.portrait, 'name'):
+            previous_portrait = user.portrait
+            img_location = previous_portrait.name
+            print img_location
+            previous_portrait.storage.delete(img_location)
+
         user.portrait = request.FILES["portrait_upload"]
 
         user.save()  # save this document to the data base
