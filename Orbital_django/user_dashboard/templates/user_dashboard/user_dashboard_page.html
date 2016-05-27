@@ -98,8 +98,13 @@
                 <!-- Place for project logo -->
             </div>
             <div class = "col-md-7 col-md-offset-4"><p>Hello!{{ current_user.nickname }}</p></div>
+            <form action = "/user_dashboard/change_portrait" method = "get" class="form-inline col-md-1 col-md-offset-11">
+                {% csrf_token %}
+                <button type="submit" class="button2">Change portrait</button>
+            </form>
             <form action = "/user_dashboard/handle_log_out" method = "post" class="form-inline col-md-1 col-md-offset-11">
-                {% csrf_token %}<button type="submit" class="button2">Log Out</button>
+                {% csrf_token %}
+                <button type="submit" class="button2">Log Out</button>
             </form>
         </div>
     </nav>

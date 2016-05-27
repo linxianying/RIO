@@ -11,4 +11,7 @@ urlpatterns = [
     url(r'^handle_file_upload', views.handle_file_upload, name="file_upload"),
 
     url(r'^handle_delete', views.handle_delete, name="delete_document"),
-] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+
+    url(r'^change_portrait', views.change_portrait, name="change_portrait"),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

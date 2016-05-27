@@ -21,7 +21,7 @@ class User(AbstractBaseUser):
     @property
     def portrait_url(self):
         if self.portrait and hasattr(self.portrait, 'url'):
-            return self.portrait.url
+            return self.portrait.url[1:]
         else:
             return "media/default_portrait.png"
 

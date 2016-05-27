@@ -33,3 +33,17 @@ def handle_delete(request):
 def display_user_dashboard(request):
     current_user = get_user(request)
     return render(request, "user_dashboard/user_dashboard_page.html", {"current_user": current_user})
+
+
+def change_portrait(request):
+    if request.method == "GET":
+        return render(request, "user_dashboard/change_portrait_page.html")
+
+    elif request.method == "POST":
+        user = get_user(request)
+
+        user.portrait = request.FILES["portrait_upload"]
+
+        user.save()  # save this document to the data base
+
+        return redirect("user_dashboard")
