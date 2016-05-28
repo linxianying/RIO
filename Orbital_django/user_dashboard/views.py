@@ -2,6 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth import logout, get_user
 from django.shortcuts import redirect
 from file_viewer import models
+from django.http import HttpResponse
+import re
+import os
+import Orbital_django.settings as settings
 
 
 def handle_log_out(request):
@@ -49,8 +53,25 @@ def change_portrait(request):
             print img_location
             previous_portrait.storage.delete(img_location)
 
-        user.portrait = request.FILES["portrait_upload"]
+        # store and set the new portrait
+        portrait_dataurl = request.POST["portrait_dataurl"]
 
-        user.save()  # save this document to the data base
+        # if the folder to store this user's portrait does exist, create it
+        portrait_dir_path = os.path.join(settings.MEDIA_ROOT, "portrait", user.email_address)
+        if not os.path.isdir(portrait_dir_path):
+                os.mkdir(portrait_dir_path)
 
-        return redirect("user_dashboard")
+        portrait_png_file_path = os.path.join(portrait_dir_path, "portrait.png")
+        
+        # create the png file to be user's portrait and write data (portrait_dataurl) into it
+        imgstr = re.search(r'base64,(.*)', portrait_dataurl).group(1)
+        portrait_png_file = open(portrait_png_file_path, 'wb')
+        portrait_png_file.write(imgstr.decode('base64'))
+        portrait_png_file.close()
+
+        # use the path relative to "media" folder to assign ImageField
+        user.portrait = '{0}/{1}/{2}'.format("portrait", user.email_address, "portrait.png")
+
+        user.save()  
+
+        return HttpResponse()  # ajax will make the user go back his/her user dashboard
