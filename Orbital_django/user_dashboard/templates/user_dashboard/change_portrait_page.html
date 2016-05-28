@@ -79,6 +79,11 @@
                         var $img2 = $("#preview2");
 
                         if(fileObj && fileObj.files && fileObj.files[0]){
+                            if(fileObj.files[0].size>2*1024*1024){
+                                alert("File too big, choose another one.");
+                                window.location.reload();
+                            }
+                            $("#file_preview").attr("disabled",true);
                             dataURL = windowURL.createObjectURL(fileObj.files[0]);
                             $img.attr('src',dataURL);
                             $img2.attr('src',dataURL);
@@ -93,6 +98,11 @@
                         }
                     });
                 });
+
+                document.getElementById("change").onclick = function(){
+                    window.location.reload();
+                }
+
                 document.getElementById('save_button').onclick = function() {
                     var canvas = document.getElementById('save_icon');
                     canvas.height = img_height;
@@ -188,6 +198,50 @@
             canvas {
                 display: none;
             }
+
+            .button {
+                background-color: #4CAF50; /* Green */
+                border: none;
+                color: white;
+                padding: 16px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                -webkit-transition-duration: 0.4s; /* Safari */
+                transition-duration: 0.4s;
+                cursor: pointer;
+            }
+            .button2 {
+                background-color: white;
+                color: #008CB0;
+                border: 2px solid #008CBA;
+            }
+
+            .button2:hover {
+                background-color: #008CBA;
+                color: white;
+            }
+            .button:after {
+                content: "";
+                background: #008CBA;
+                display: block;
+                position: absolute;
+                padding-top: 300%;
+                padding-left: 350%;
+                margin-left: -20px!important;
+                margin-top: -120%;
+                opacity: 0;
+                transition: all 0.8s
+            }
+
+            .button:active:after {
+                padding: 0;
+                margin: 0;
+                opacity: 1;
+                transition: 0s
+            }
         </style>
 
     </head>
@@ -222,5 +276,6 @@
             <input id= "file_preview" name = "portrait_upload" type="file" class="form-control input-sm" required="required">
             <button class="button2" type="button" id="save_button">Save</button>
         </form>
+        <button class="button2" type="button" id="change">Change image</button>
     </body>
 </html>
