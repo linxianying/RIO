@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import os
 import zipfile
+from unrar import rarfile
 from wand.image import Image
 import models
 from django.contrib.auth import get_user
@@ -43,7 +44,6 @@ def display_file_viewer_page(request):
             return render(request, "file_viewer/comment_viewer_page.html", context)
 
     else:
-        # zip file
         document = models.Document.objects.get(id = int(request.GET["document_id"]))
 
         file_position = document.file_field.storage.path(document.file_field)
@@ -59,24 +59,44 @@ def display_file_viewer_page(request):
             zip_file = zipfile.ZipFile(file_position, "r")
             zip_alphabatical_list = sorted(zip_file.namelist())
 
-            if os.path.isdir(img_folder_path) == False:
+            if not os.path.isdir(img_folder_path):
                 os.mkdir(img_folder_path)
                 i = 0
-                for file in zip_alphabatical_list:
-                    zip_file.extract(file, img_folder_path)
-                    os.rename(os.path.join(img_folder_path, zip_alphabatical_list[i]), os.path.join(img_folder_path, str(i) + '.jpeg'))
-                    pages.extend([os.path.dirname(file_url)[1:] + "/" + file_name + "/" + str(i) + ".jpeg"])
+                for page_name in zip_alphabatical_list:
+                    zip_file.extract(page_name, img_folder_path)
+                    os.rename(os.path.join(img_folder_path, page_name),
+                              os.path.join(img_folder_path, str(i) + "." + page_name.split(".")[-1]))
+                    pages.extend([os.path.dirname(file_url)[1:] + "/" + file_name + "/" + str(i) + "." + page_name.split(".")[-1]])
                     i += 1
             else:
                 i = 0
-                for file in zip_alphabatical_list:
-                    pages.extend([os.path.dirname(file_url)[1:] + "/" + file_name + "/" + str(i) + ".jpeg"])
+                for page_name in zip_alphabatical_list:
+                    pages.extend([os.path.dirname(file_url)[1:] + "/" + file_name + "/" + str(i) + "." + page_name.split(".")[-1]])
+                    i += 1
+
+        elif extension == "rar":
+            rar_file = rarfile.RarFile(file_position, "r")
+            rar_alphabatical_list = sorted(rar_file.namelist())
+
+            if not os.path.isdir(img_folder_path):
+                os.mkdir(img_folder_path)
+                i = 0
+                for page_name in rar_alphabatical_list:
+                    rar_file.extract(page_name, img_folder_path)
+                    os.rename(os.path.join(img_folder_path, page_name),
+                              os.path.join(img_folder_path, str(i) + "." + page_name.split(".")[-1]))
+                    pages.extend([os.path.dirname(file_url)[1:] + "/" + file_name + "/" + str(i) + "." + page_name.split(".")[-1]])
+                    i += 1
+            else:
+                i = 0
+                for page_name in rar_alphabatical_list:
+                    pages.extend([os.path.dirname(file_url)[1:] + "/" + file_name + "/" + str(i) + "." + page_name.split(".")[-1]])
                     i += 1
 
         elif extension == "pdf":
-            if os.path.isdir(img_folder_path) == False:
+            if not os.path.isdir(img_folder_path):
                 os.mkdir(img_folder_path)
-                document_images = Image(filename = file_position, resolution = 240)
+                document_images = Image(filename=file_position, resolution=240)
                 for i, page in enumerate(document_images.sequence):
                     with Image(page) as page_image:
                         page_image.alpha_channel = False
