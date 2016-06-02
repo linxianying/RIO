@@ -94,6 +94,7 @@ def display_file_viewer_page(request):
                     i += 1
 
         elif extension == "pdf":
+            '''
             if not os.path.isdir(img_folder_path):
                 os.mkdir(img_folder_path)
                 document_images = Image(filename=file_position, resolution=240)
@@ -106,6 +107,12 @@ def display_file_viewer_page(request):
                 document_images = Image(filename=file_position, resolution=180)
                 for i, page in enumerate(document_images.sequence):
                     pages.extend([os.path.dirname(file_url)[1:] + "/" + file_name + "/" + str(i) + ".png"])
+            '''
+            context = {
+                "document": document,
+                "file_url": file_url[1:],
+            }
+            return render(request, "file_viewer/pdf_file_viewer_page.html", context)
 
         context = {
             "document": document,

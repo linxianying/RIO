@@ -59,6 +59,10 @@ $(document).ready(function() {
         $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
         //设置文档的大小
         $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
+        $(".page_div").each(function() {
+            var div = $(this)
+            div.css("height", div.find(".Page").height() + 6 + "px");
+        });
     });
     $(window).resize(function () {
         $("#wrapper").css("height", document.body.clientHeight - 24 + "px");
@@ -68,5 +72,9 @@ $(document).ready(function() {
         $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
         //设置文档的大小
         $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
+        $(".page_div").each(function() {
+            var div = $(this)
+            div.css("height", div.find(".Page").height() + 6 + "px");
+        });
     });
 });

@@ -12,6 +12,7 @@
                 overflow: auto;
                 /*text-align: center;*/
                 float: left;
+                background-color: #696969;
             } 
             #commentsViewer {
                 float: left;
@@ -33,7 +34,7 @@
                 margin-left: auto; 
                 margin-right: auto;
             }
-            img {
+            canvas {
                 position: absolute;
             }
         </style>
@@ -52,10 +53,34 @@
         <!--support marked down for comment-->
         <script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
 
+        <script src="/static/pdfjs/build/compatibility.js"></script>
+        <script src="/static/pdfjs/build/pdf.js"></script>
+        <script src="/static/pdfjs/build/pdf.worker.js"></script>
 
         <script src="http://code.jquery.com/ui/1.12.0-rc.2/jquery-ui.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css"/>
+        <script>
+        $document.ready(function() {
+            $("#refresh_comment_button").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "",
+                    data: {
+                        csrfmiddlewaretoken: getCookie('csrftoken'),
+                        operation: "refresh",
+                        document_id: $("button[name='document_id']").val(),
+                    },
+                    success: function (data) {
+                        $("#comment_update_div").html(data);
+                        markdown();
+                    },
+                })
+            });  
+        });
+        </script>
+
+
     </head>
     
     <body>
@@ -97,12 +122,7 @@
 
         <div id="wrapper">
             <div id="fileViewer">
-                {% for page in pages %}
-                <div class="page_div">
-                    <img class="Page" src={{ page }}>
-                </div>
-                <br>
-                {% endfor %}
+
             </div>
 
             <div id="commentsViewer">
@@ -172,57 +192,173 @@
             </div>
 
         </div>
-    <script>
-        $("img").mousedown(function(e) {
-            page = $(e.target);
-            mouse_absolut_x = e.pageX;
-            mouse_absolut_y = e.pageY;
-            page_top_left_x = page.offset().left;
-            page_top_left_y = page.offset().top;
-            top_left_relative_x = mouse_absolut_x - page_top_left_x;
-            top_left_relative_y = mouse_absolut_y - page_top_left_y;
 
-            var new_annotation = $("<div class='annotation panel'></div>");
-            page.parents(".page_div").append(new_annotation);
-            new_annotation.css({
-                "background": "rgba(70,128,128,0.6)",
-                "position": "absolute",
-                "width": "0px",
-                "height": "0px",
-                "left": top_left_relative_x,
-                "top": top_left_relative_y,
-            });
+    </body>
 
-            page.mousemove(function(e) {
+<script>
+var numPages;
+var pdfDoc;
+var scale = 0.8;
+
+/**
+ * start from the "num"th page (included), rendered the following "rest" pages
+ * @param  {[type]} num   the index of the page where rendering start
+ * @param  {[type]} rest  total number of continual pages that will be rendered
+ * @param  {[type]} scale the scale of rendering
+ * @return {[type]}    
+ */
+function renderPages(num, rest, scale) {
+    pdfDoc.getPage(num).then(function(page) {
+
+        next_page_canvas_id = "page_canvas_" + num;
+        var canvas = document.getElementById(next_page_canvas_id);
+        var context = canvas.getContext('2d');
+        var viewport = page.getViewport(scale);
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        var renderContext = {
+            canvasContext: context,
+            viewport: viewport
+        };
+        
+        var renderTask = page.render(renderContext);
+
+        // when the rendering of the current page is finished, 
+        // if this is not the last page, and, if 
+        // render the next page         
+        renderTask.promise.then(function() {
+            if (num < pdfDoc.numPages && rest > 1)
+                renderPages(num + 1, rest - 1, scale);
+        });
+    });
+}
+
+function prepareAndRenderAll(scale) {
+
+    var url = "{{ file_url }}";
+    PDFJS.workerSrc = '/static/pdfjs/build/pdf.worker.js';
+
+    PDFJS.getDocument(url).then(function(pdf) {
+        pdfDoc = pdf;
+        // assign value to global variabe: numPages, this variable is to used with scroll bar to recognize which page the reader is reading
+        numPages = pdfDoc.numPages;
+        // create the same number of canvases as pages
+        // also 
+        // initialize the canvases' height and width according to the first
+        pdfDoc.getPage(1).then(function(sample_page) {
+            var appendPages = ""
+            var sample__height = sample_page.getViewport(scale).height;
+            var sample__width = sample_page.getViewport(scale).width;
+
+            for (var i = 1; i <= pdfDoc.numPages; i++) {
+                new_page_div_id = "page_div_" + i;
+                new_page_canvas_id = "page_canvas_" + i;
+
+                new_page = "<div class='page_div' id=" + "'" + new_page_div_id +  "'>" + 
+                            "<canvas id=" + "'" + new_page_canvas_id + "'" + "></canvas>" +
+                            "</div>" +
+                            "<br>";
+                appendPages = appendPages + new_page;
+            }
+
+            $("#fileViewer").append(appendPages);
+
+            $(".page_div").css("height", (sample__height + 6) + "px")
+            $(".page_div").css("width", (sample__width + 6) + "px")
+
+
+            // i want to move this out of prepareAndRenderAll, but once i do that, this piece of code does no work, need to figure out why
+            $("canvas").mousedown(function(e) {
+                page = $(e.target);
                 mouse_absolut_x = e.pageX;
                 mouse_absolut_y = e.pageY;
                 page_top_left_x = page.offset().left;
                 page_top_left_y = page.offset().top;
-                bottom_right_relative_x = mouse_absolut_x - page_top_left_x;
-                bottom_right_relative_y = mouse_absolut_y - page_top_left_y;
+                top_left_relative_x = mouse_absolut_x - page_top_left_x;
+                top_left_relative_y = mouse_absolut_y - page_top_left_y;
 
+                var new_annotation = $("<div class='annotation panel'></div>");
+                page.parents(".page_div").append(new_annotation);
                 new_annotation.css({
-                    "width": Math.abs(bottom_right_relative_x - top_left_relative_x),
-                    "height": Math.abs(bottom_right_relative_y - top_left_relative_y),
-                    "left": Math.min(top_left_relative_x, bottom_right_relative_x),
-                    "top": Math.min(top_left_relative_y, bottom_right_relative_y),
+                    "background": "rgba(0,0,0,0.08)",
+                    "position": "absolute",
+                    "width": "0px",
+                    "height": "0px",
+                    "left": top_left_relative_x,
+                    "top": top_left_relative_y,
                 });
-            });
 
-            page.mouseup(function(e) {
-                page_height = page.attr("height");
-                page_width = page.attr("width");
-                top_percent = new_annotation.css("top") / page_height;
-                left_percent = new_annotation.css("left") / page_width;
-                height_percent = new_annotation.css("height") / page_height;
-                width_percent = new_annotation.css("width") / page_width;
+                page.mousemove(function(e) {
+                    mouse_absolut_x = e.pageX;
+                    mouse_absolut_y = e.pageY;
+                    page_top_left_x = page.offset().left;
+                    page_top_left_y = page.offset().top;
+                    bottom_right_relative_x = mouse_absolut_x - page_top_left_x;
+                    bottom_right_relative_y = mouse_absolut_y - page_top_left_y;
 
-                page.unbind("mousemove");
-                new_annotation.draggable({ containment: "parent" }).resizable({ containment: "parent" });
-                $('#annotation_modal').modal('toggle');
-                page.unbind("mouseup"); 
+                    new_annotation.css({
+                        "width": Math.abs(bottom_right_relative_x - top_left_relative_x),
+                        "height": Math.abs(bottom_right_relative_y - top_left_relative_y),
+                        "left": Math.min(top_left_relative_x, bottom_right_relative_x),
+                        "top": Math.min(top_left_relative_y, bottom_right_relative_y),
+                    });
+                });
+
+                page.mouseup(function(e) {
+                    page_height = page.attr("height");
+                    page_width = page.attr("width");
+                    top_percent = new_annotation.css("top") / page_height;
+                    left_percent = new_annotation.css("left") / page_width;
+                    height_percent = new_annotation.css("height") / page_height;
+                    width_percent = new_annotation.css("width") / page_width;
+
+                    page.unbind("mousemove");
+                    new_annotation.draggable({ containment: "parent" }).resizable({ containment: "parent" });
+                    $('#annotation_modal').modal('toggle');
+                    page.unbind("mouseup"); 
+                });
+
+                // original idea: if mouse is dragged to outside of canvas, it is invalid
+                // however, not work as expectd. need to figure out why
+                /*$("body").mouseup(function(e){
+                    if (e.target.tagName != "CANVAS") {
+                        alert(e.target.tagName)
+                        page.unbind("mousemove");
+                        new_annotation.remove();
+                    }
+                });*/
             });
         });
-    </script>
-    </body>
+
+
+        // start from the first page, render all following pages
+        renderPages(1, Infinity, scale);
+    });
+}
+
+
+prepareAndRenderAll(scale);
+
+/*
+var previous = 1;
+
+$("#fileViewer").scroll(function() {
+    // this is an DOM element, not a jquery object (which is an collection (array) DOM elements)
+    // $(DOM element) = jquery object
+    var percentage = this.scrollTop / (this.scrollHeight - this.clientHeight);
+    page_index = Math.round(percentage * numPages) + 1;
+    if (page_index != previous) {
+        var id = "page_canvas_" + previous;
+        previous = page_index;
+        var pre = document.getElementById(id);
+        pre.getContext('2d').clearRect(0, 0, pre.width, pre.height);
+        renderPages(page_index, 1, scale)
+    }
+});
+*/
+
+    
+</script>
+
 </html>
