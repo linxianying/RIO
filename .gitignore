@@ -9,7 +9,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-build/
+# build/       # i need pdfjs/build
 develop-eggs/
 dist/
 downloads/

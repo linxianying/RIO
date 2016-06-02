@@ -53,9 +53,9 @@
         <!--support marked down for comment-->
         <script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
 
-        <script src="/static/pdfjs/build/compatibility.js"></script>
-        <script src="/static/pdfjs/build/pdf.js"></script>
-        <script src="/static/pdfjs/build/pdf.worker.js"></script>
+        <script src="/static/pdfjs/compatibility.js"></script>
+        <script src="/static/pdfjs/pdf.js"></script>
+        <script src="/static/pdfjs/pdf.worker.js"></script>
 
         <script src="http://code.jquery.com/ui/1.12.0-rc.2/jquery-ui.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
@@ -237,7 +237,7 @@ function renderPages(num, rest, scale) {
 function prepareAndRenderAll(scale) {
 
     var url = "{{ file_url }}";
-    PDFJS.workerSrc = '/static/pdfjs/build/pdf.worker.js';
+    PDFJS.workerSrc = '/static/pdfjs/pdf.worker.js';
 
     PDFJS.getDocument(url).then(function(pdf) {
         pdfDoc = pdf;

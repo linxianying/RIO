@@ -21,6 +21,14 @@ function markdown() {
     });
 }
 
+function imgLoad(img, callback) {
+    var timer = setInterval(function() {
+        if (img.complete) {
+            callback(img)
+            clearInterval(timer)
+        }
+    }, 18)
+}
 
 $(document).ready(function() {
     markdown();
@@ -60,9 +68,21 @@ $(document).ready(function() {
         //设置文档的大小
         $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
         $(".page_div").each(function() {
-            var div = $(this)
-            div.css("height", div.find(".Page").height() + 6 + "px");
+            var div = $(this);
+            var img = div.children(".Page");
+            imgLoad(img[0], function() {
+                div.css("height", img.height() + 6 + "px");
+            });
+            /* this is not correct when images are gotten from cache rather than loaded from url
+               "complete" is true when the image is shown
+               "load" is triggered when the image is loaded from url
+            img.load(function() {
+                div.css("height", img.height() + 6 + "px");
+            });
+            */
         });
+
+
     });
     $(window).resize(function () {
         $("#wrapper").css("height", document.body.clientHeight - 24 + "px");
@@ -73,8 +93,11 @@ $(document).ready(function() {
         //设置文档的大小
         $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
         $(".page_div").each(function() {
-            var div = $(this)
-            div.css("height", div.find(".Page").height() + 6 + "px");
+            var div = $(this);
+            var img = div.children(".Page");
+            imgLoad(img[0], function() {
+                div.css("height", img.height() + 6 + "px");
+            });
         });
     });
 });
