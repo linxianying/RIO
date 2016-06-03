@@ -20,7 +20,7 @@
                 border-width: 1px;
                 overflow: auto;
             }
-            #resize_button, #comment_button {
+            #resize_buttons_div, #comment_button, #annotation_color_buttons_div {
                 margin-right: 18px;
                 float: right;
             }
@@ -36,6 +36,9 @@
             }
             canvas {
                 position: absolute;
+            }
+            .Annotation {
+                border-radius: 12px;
             }
         </style>
 
@@ -61,7 +64,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css"/>
         <script>
-        $document.ready(function() {
+        $(document).ready(function() {
             $("#refresh_comment_button").click(function () {
                 $.ajax({
                     type: "POST",
@@ -114,9 +117,15 @@
             <button type="button" id="comment_button" data-toggle="modal" data-target="#comment_modal">
                 comments
             </button>
-            <div id="resize_button">
+            <div id="resize_buttons_div">
                 <button type="button" id="buttonForLarger">+</button>
                 <button type="button" id="buttonForSmaller">-</button>
+            </div>
+            <div id="annotation_color_buttons_div">
+                <button type="button" class="btn btn-lg" style="background-color: rgba(0,0,0,0.18)" id="default_color"></button> 
+                <button type="button" class="btn btn-lg" style="background-color: rgba(0,191,255,0.18)" id="blue_color"></button> 
+                <button type="button" class="btn btn-lg" style="background-color: rgba(127, 255, 0, 0.18)" id="green_color"></button> 
+                <button type="button" class="btn btn-lg" style="background-color: rgba(255, 0, 0, 0.18)" id="red_color"></button>
             </div>
         </div>
 
@@ -199,6 +208,11 @@
 var numPages;
 var pdfDoc;
 var scale = 0.8;
+var annotation_color = "rgba(0,0,0,0.08)";
+
+$("#annotation_color_buttons_div").find("button").click(function() {
+    annotation_color = $(this).css("background-color");
+});
 
 /**
  * start from the "num"th page (included), rendered the following "rest" pages
@@ -278,10 +292,10 @@ function prepareAndRenderAll(scale) {
                 top_left_relative_x = mouse_absolut_x - page_top_left_x;
                 top_left_relative_y = mouse_absolut_y - page_top_left_y;
 
-                var new_annotation = $("<div class='annotation panel'></div>");
+                var new_annotation = $("<div class='Annotation'></div>");
                 page.parents(".page_div").append(new_annotation);
                 new_annotation.css({
-                    "background": "rgba(0,0,0,0.08)",
+                    "background": annotation_color,
                     "position": "absolute",
                     "width": "0px",
                     "height": "0px",

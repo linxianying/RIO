@@ -30,6 +30,8 @@ function imgLoad(img, callback) {
     }, 18)
 }
 
+scale_factor = 1.08;
+
 $(document).ready(function() {
     markdown();
 
@@ -50,10 +52,34 @@ $(document).ready(function() {
     });
 
     $("#buttonForLarger").click(function () {
-        $(".Page").css("width", parseInt($(".Page").css("width")) + 80 + "px");
+        $(".Page").css("width", parseFloat($(".Page").css("width")) * scale_factor + "px");
+        $(".PageDiv").each(function() {
+            var div = $(this);
+            div.css("height", (parseFloat(div.css("height")) - 6) * scale_factor + 6 + "px");
+            div.css("width", (parseFloat(div.css("width")) - 6) * scale_factor + 6 + "px");
+        });
+        $(".Annotation").each(function() {
+            $(this).css("top", parseFloat($(this).css("top")) * scale_factor + "px");
+            $(this).css("left", parseFloat($(this).css("left")) * scale_factor + "px");
+            $(this).css("width", parseFloat($(this).css("width")) * scale_factor + "px");
+            $(this).css("height", parseFloat($(this).css("height")) * scale_factor + "px");
+            $(this).css("border_radius", parseFloat($(this).css("border_radius")) * scale_factor + "px");
+        });
     });
     $("#buttonForSmaller").click(function () {
-        $(".Page").css("width", parseInt($(".Page").css("width")) - 80 + "px");
+        $(".Page").css("width", parseFloat($(".Page").css("width")) / scale_factor + "px");
+        $(".PageDiv").each(function() {
+            var div = $(this);
+            div.css("height", (parseFloat(div.css("height")) - 6) / scale_factor + 6 + "px");
+            div.css("width", (parseFloat(div.css("width")) - 6) / scale_factor + 6 + "px");
+        });
+        $(".Annotation").each(function() {
+            $(this).css("top", parseFloat($(this).css("top")) / scale_factor + "px");
+            $(this).css("left", parseFloat($(this).css("left")) / scale_factor + "px");
+            $(this).css("width", parseFloat($(this).css("width")) / scale_factor + "px");
+            $(this).css("height", parseFloat($(this).css("height")) / scale_factor + "px");
+            $(this).css("border_radius", parseFloat($(this).css("border_radius")) / scale_factor + "px");
+        });
     });
 
     $(document).ready(function () {
@@ -67,11 +93,12 @@ $(document).ready(function() {
         $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
         //设置文档的大小
         $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
-        $(".page_div").each(function() {
+        $(".PageDiv").each(function() {
             var div = $(this);
             var img = div.children(".Page");
             imgLoad(img[0], function() {
                 div.css("height", img.height() + 6 + "px");
+                div.css("width", img.width() + 6 + "px");
             });
             /* this is not correct when images are gotten from cache rather than loaded from url
                "complete" is true when the image is shown
@@ -91,13 +118,24 @@ $(document).ready(function() {
         $("#commentsViewer").css("height", parseInt($("#wrapper").css("height")) * 0.8 + "px");
         $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
         //设置文档的大小
+        var original_width = parseFloat($(".Page").css("width"));
         $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
-        $(".page_div").each(function() {
+        var new_width = parseFloat($(".Page").css("width"));
+        var scale_factor = new_width / original_width;
+        $(".PageDiv").each(function() {
             var div = $(this);
             var img = div.children(".Page");
             imgLoad(img[0], function() {
                 div.css("height", img.height() + 6 + "px");
+                div.css("width", img.width() + 6 + "px");
             });
+        });
+        $(".Annotation").each(function() {
+            $(this).css("top", parseFloat($(this).css("top")) * scale_factor + "px");
+            $(this).css("left", parseFloat($(this).css("left")) * scale_factor + "px");
+            $(this).css("width", parseFloat($(this).css("width")) * scale_factor + "px");
+            $(this).css("height", parseFloat($(this).css("height")) * scale_factor + "px");
+            $(this).css("border_radius", parseFloat($(this).css("border_radius")) * scale_factor + "px");
         });
     });
 });
