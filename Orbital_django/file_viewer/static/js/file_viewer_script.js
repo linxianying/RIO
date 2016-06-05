@@ -14,7 +14,6 @@ function getCookie(name) {
     return cookieValue;
 }
 
-
 function markdown() {
     $(".content-markdown").each(function() {
         $(this).html(marked($(this).text()));
@@ -27,7 +26,89 @@ function imgLoad(img, callback) {
             callback(img)
             clearInterval(timer)
         }
-    }, 18)
+    }, 8)
+}
+
+function startListeningSelectionBoxCreation() {
+
+    var annotation_color = "rgba(0,0,0,0.18)";
+
+    $("#annotation_color_buttons_div").find("button").on("click", function() {
+        annotation_color = $(this).css("background-color");
+    });
+
+    $(".PageImg, .PageCanvas").on("mousedown", function(e) {
+        var page = $(e.target);
+        var mouse_absolut_x = e.pageX;
+        var mouse_absolut_y = e.pageY;
+        var page_top_left_x = page.offset().left;
+        var page_top_left_y = page.offset().top;
+        var top_left_relative_x = mouse_absolut_x - page_top_left_x;
+        var top_left_relative_y = mouse_absolut_y - page_top_left_y;
+
+        var new_annotation = $("<div class='Annotation'></div>");
+        page.parents(".page_div, .PageDiv").append(new_annotation);
+        new_annotation.css({
+            "background": annotation_color,
+            "position": "absolute",
+            "width": "1px",
+            "height": "1px",
+            "left": top_left_relative_x,
+            "top": top_left_relative_y,
+        });
+
+        $(".PageImg, .PageCanvas, .Annotation").on("mousemove", function(e) {
+            mouse_absolut_x = e.pageX;
+            mouse_absolut_y = e.pageY;
+            page_top_left_x = page.offset().left;
+            page_top_left_y = page.offset().top;
+            var bottom_right_relative_x = mouse_absolut_x - page_top_left_x;
+            var bottom_right_relative_y = mouse_absolut_y - page_top_left_y;
+
+            new_annotation.css({
+                "width": Math.abs(bottom_right_relative_x - top_left_relative_x),
+                "height": Math.abs(bottom_right_relative_y - top_left_relative_y),
+                "left": Math.min(top_left_relative_x, bottom_right_relative_x),
+                "top": Math.min(top_left_relative_y, bottom_right_relative_y),
+            });
+        });
+
+        
+        $("body").on("mouseup", function(e){
+            
+            if ($(e.target).hasClass("PageImg") || $(e.target).hasClass("PageCanvas") || $(e.target).hasClass("Annotation")) {
+                var page_height = page.attr("height");
+                var page_width = page.attr("width");
+                var top_percent = new_annotation.css("top") / page_height;
+                var left_percent = new_annotation.css("left") / page_width;
+                var height_percent = new_annotation.css("height") / page_height;
+                var width_percent = new_annotation.css("width") / page_width;
+
+                new_annotation.draggable({ containment: "parent" }).resizable({ containment: "parent" });
+                $('#annotation_modal').modal('toggle');
+                
+                $(".PageImg, .PageCanvas, .Annotation").off("mousemove");
+                $("body").off("mouseup");
+            }
+            // if mouse is released outside of PageImg or PageCanvas, it is invalid
+            else {
+                new_annotation.remove();
+
+                $(".PageImg, .PageCanvas, .Annotation").off("mousemove");
+                $("body").off("mouseup");
+            }
+        });
+    });
+}
+
+function resizeAnnotations(scale_factor) {
+    $(".Annotation").each(function() {
+        $(this).css("top", parseFloat($(this).css("top")) * scale_factor + "px");
+        $(this).css("left", parseFloat($(this).css("left")) * scale_factor + "px");
+        $(this).css("width", parseFloat($(this).css("width")) * scale_factor + "px");
+        $(this).css("height", parseFloat($(this).css("height")) * scale_factor + "px");
+        $(this).css("border_radius", parseFloat($(this).css("border_radius")) * scale_factor + "px");
+    });
 }
 
 scale_factor = 1.08;
@@ -51,35 +132,24 @@ $(document).ready(function() {
         })
     });
 
+    // img resize
     $("#buttonForLarger").click(function () {
-        $(".Page").css("width", parseFloat($(".Page").css("width")) * scale_factor + "px");
+        $(".PageImg").css("width", parseFloat($(".PageImg").css("width")) * scale_factor + "px");
         $(".PageDiv").each(function() {
             var div = $(this);
             div.css("height", (parseFloat(div.css("height")) - 6) * scale_factor + 6 + "px");
             div.css("width", (parseFloat(div.css("width")) - 6) * scale_factor + 6 + "px");
         });
-        $(".Annotation").each(function() {
-            $(this).css("top", parseFloat($(this).css("top")) * scale_factor + "px");
-            $(this).css("left", parseFloat($(this).css("left")) * scale_factor + "px");
-            $(this).css("width", parseFloat($(this).css("width")) * scale_factor + "px");
-            $(this).css("height", parseFloat($(this).css("height")) * scale_factor + "px");
-            $(this).css("border_radius", parseFloat($(this).css("border_radius")) * scale_factor + "px");
-        });
+        resizeAnnotations(scale_factor)
     });
     $("#buttonForSmaller").click(function () {
-        $(".Page").css("width", parseFloat($(".Page").css("width")) / scale_factor + "px");
+        $(".PageImg").css("width", parseFloat($(".PageImg").css("width")) / scale_factor + "px");
         $(".PageDiv").each(function() {
             var div = $(this);
             div.css("height", (parseFloat(div.css("height")) - 6) / scale_factor + 6 + "px");
             div.css("width", (parseFloat(div.css("width")) - 6) / scale_factor + 6 + "px");
         });
-        $(".Annotation").each(function() {
-            $(this).css("top", parseFloat($(this).css("top")) / scale_factor + "px");
-            $(this).css("left", parseFloat($(this).css("left")) / scale_factor + "px");
-            $(this).css("width", parseFloat($(this).css("width")) / scale_factor + "px");
-            $(this).css("height", parseFloat($(this).css("height")) / scale_factor + "px");
-            $(this).css("border_radius", parseFloat($(this).css("border_radius")) / scale_factor + "px");
-        });
+        resizeAnnotations(1 / scale_factor)
     });
 
     $(document).ready(function () {
@@ -92,10 +162,10 @@ $(document).ready(function() {
         $("#commentsViewer").css("height", parseInt($("#wrapper").css("height")) * 0.8 + "px");
         $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
         //设置文档的大小
-        $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
+        $(".PageImg").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
         $(".PageDiv").each(function() {
             var div = $(this);
-            var img = div.children(".Page");
+            var img = div.children(".PageImg");
             imgLoad(img[0], function() {
                 div.css("height", img.height() + 6 + "px");
                 div.css("width", img.width() + 6 + "px");
@@ -108,8 +178,6 @@ $(document).ready(function() {
             });
             */
         });
-
-
     });
     $(window).resize(function () {
         $("#wrapper").css("height", document.body.clientHeight - 24 + "px");
@@ -118,24 +186,28 @@ $(document).ready(function() {
         $("#commentsViewer").css("height", parseInt($("#wrapper").css("height")) * 0.8 + "px");
         $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
         //设置文档的大小
-        var original_width = parseFloat($(".Page").css("width"));
-        $(".Page").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
-        var new_width = parseFloat($(".Page").css("width"));
+        var original_width = parseFloat($(".PageImg").css("width"));
+
+        $(".PageImg").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
+
+        var new_width = parseFloat($(".PageImg").css("width"));
         var scale_factor = new_width / original_width;
+
         $(".PageDiv").each(function() {
             var div = $(this);
-            var img = div.children(".Page");
+            var img = div.children(".PageImg");
             imgLoad(img[0], function() {
                 div.css("height", img.height() + 6 + "px");
                 div.css("width", img.width() + 6 + "px");
             });
         });
+
+        resizeAnnotations(scale_factor)
+    });
+
+    $("#toggle_annotation_frame_button").click(function() {
         $(".Annotation").each(function() {
-            $(this).css("top", parseFloat($(this).css("top")) * scale_factor + "px");
-            $(this).css("left", parseFloat($(this).css("left")) * scale_factor + "px");
-            $(this).css("width", parseFloat($(this).css("width")) * scale_factor + "px");
-            $(this).css("height", parseFloat($(this).css("height")) * scale_factor + "px");
-            $(this).css("border_radius", parseFloat($(this).css("border_radius")) * scale_factor + "px");
+            $(this).toggle();
         });
     });
 });
