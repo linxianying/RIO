@@ -2,7 +2,7 @@
 * @Author: Roy
 * @Date:   2016-06-05 09:09:27
 * @Last Modified by:   Roy
-* @Last Modified time: 2016-06-05 18:20:27
+* @Last Modified time: 2016-06-06 18:23:19
 */
 
 html, body {
@@ -22,7 +22,7 @@ html, body {
     border-width: 1px;
     overflow: auto;
 }
-#resize_buttons_div, #comment_button, #annotation_color_buttons_div, #toggle_annotation_frame_button {
+#resize_buttons_div, #comment_button, #annotation_color_buttons_div, #show_annotation_frame_button, #hide_annotation_frame_button {
     margin-right: 18px;
     float: right;
 }

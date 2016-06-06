@@ -71,8 +71,8 @@ function startListeningSelectionBoxCreation() {
                 "left": Math.min(top_left_relative_x, bottom_right_relative_x),
                 "top": Math.min(top_left_relative_y, bottom_right_relative_y),
             });
+            e.stopPropagation();
         });
-
         
         $("body").on("mouseup", function(e){
             
@@ -97,7 +97,10 @@ function startListeningSelectionBoxCreation() {
                 $(".PageImg, .PageCanvas, .Annotation").off("mousemove");
                 $("body").off("mouseup");
             }
+            e.stopPropagation();
         });
+
+        e.stopPropagation();
     });
 }
 
@@ -116,7 +119,7 @@ scale_factor = 1.08;
 $(document).ready(function() {
     markdown();
 
-    $("#refresh_comment_button").click(function () {
+    $("#refresh_comment_button").on('click', function () {
         $.ajax({
             type: "POST",
             url: "",
@@ -133,17 +136,17 @@ $(document).ready(function() {
     });
 
     // img resize
-    $("#buttonForLarger").click(function () {
-        $(".PageImg").css("width", parseFloat($(".PageImg").css("width")) * scale_factor + "px");
-        $(".PageDiv").each(function() {
+    $("#buttonForLarger").on('click', function () {
+        $('.PageImg').css("width", parseFloat($(this).css("width")) * scale_factor + "px");
+        $('.PageDiv').each(function() {
             var div = $(this);
             div.css("height", (parseFloat(div.css("height")) - 6) * scale_factor + 6 + "px");
             div.css("width", (parseFloat(div.css("width")) - 6) * scale_factor + 6 + "px");
         });
         resizeAnnotations(scale_factor)
     });
-    $("#buttonForSmaller").click(function () {
-        $(".PageImg").css("width", parseFloat($(".PageImg").css("width")) / scale_factor + "px");
+    $("#buttonForSmaller").on('click', function () {
+        $(".PageImg").css("width", parseFloat($(this).css("width")) / scale_factor + "px");
         $(".PageDiv").each(function() {
             var div = $(this);
             div.css("height", (parseFloat(div.css("height")) - 6) / scale_factor + 6 + "px");
@@ -153,16 +156,18 @@ $(document).ready(function() {
     });
 
     $(document).ready(function () {
+        var wrapper = $("#wrapper");
+        var fileViewer = $("#fileViewer");
         //设置wrapper的高度
-        $("#wrapper").css("height", document.body.clientHeight - 24 + "px"); //jquery的css方法既可以设置css内容又可以获取css内容
+        wrapper.css("height", document.body.clientHeight - 24 + "px"); //jquery的css方法既可以设置css内容又可以获取css内容
         //设置fileViewer的高度和宽度
-        $("#fileViewer").css("height", parseInt($("#wrapper").css("height")) + "px");
-        $("#fileViewer").css("width", parseInt($("#wrapper").css("width")) * 0.6 + "px"); //jquery的css方法获得的是字符串，用js的parseInt获取数值
+        fileViewer.css("height", wrapper.height() + "px");
+        fileViewer.css("width", parseInt(wrapper.css("width")) * 0.6 + "px"); //jquery的css方法获得的是字符串，用js的parseInt获取数值
         //设置commentsViewer的高度和宽度
-        $("#commentsViewer").css("height", parseInt($("#wrapper").css("height")) * 0.8 + "px");
-        $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
+        $("#commentsViewer").css("height", wrapper.height() * 0.8 + "px");
+        $("#commentsViewer").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
         //设置文档的大小
-        $(".PageImg").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
+        $(".PageImg").css("width", fileViewer.width() - 24 + "px");
         $(".PageDiv").each(function() {
             var div = $(this);
             var img = div.children(".PageImg");
@@ -180,15 +185,17 @@ $(document).ready(function() {
         });
     });
     $(window).resize(function () {
-        $("#wrapper").css("height", document.body.clientHeight - 24 + "px");
-        $("#fileViewer").css("height", parseInt($("#wrapper").css("height")) + "px");
-        $("#fileViewer").css("width", parseInt($("#wrapper").css("width")) * 0.6 + "px");
-        $("#commentsViewer").css("height", parseInt($("#wrapper").css("height")) * 0.8 + "px");
-        $("#commentsViewer").css("width", parseInt($("#wrapper").css("width")) - parseInt($("#fileViewer").css("width")) - 2 + "px");
+        var wrapper = $("#wrapper");
+        var fileViewer = $("#fileViewer");
+        wrapper.css("height", document.body.clientHeight - 24 + "px");
+        fileViewer.css("height", wrapper.height() + "px");
+        fileViewer.css("width", wrapper.width() * 0.6 + "px");
+        $("#commentsViewer").css("height", wrapper.height() * 0.8 + "px");
+        $("#commentsViewer").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
         //设置文档的大小
         var original_width = parseFloat($(".PageImg").css("width"));
 
-        $(".PageImg").css("width", parseInt($("#fileViewer").css("width")) - 24 + "px");
+        $(".PageImg").css("width", fileViewer.width() - 24 + "px");
 
         var new_width = parseFloat($(".PageImg").css("width"));
         var scale_factor = new_width / original_width;
@@ -205,9 +212,14 @@ $(document).ready(function() {
         resizeAnnotations(scale_factor)
     });
 
-    $("#toggle_annotation_frame_button").click(function() {
+    $("#show_annotation_frame_button").on('click', function() {
         $(".Annotation").each(function() {
-            $(this).toggle();
+            $(this).slideDown(180);
+        });
+    });
+    $("#hide_annotation_frame_button").on('click', function() {
+        $(".Annotation").each(function() {
+            $(this).slideUp(180);
         });
     });
 });
