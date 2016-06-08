@@ -1,3 +1,5 @@
+var numPages = 0;
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -20,6 +22,12 @@ function markdown() {
     });
 }
 
+/**
+ * every 8ms, check whether the specified img finsih being loaded, if so, call the specified callback function
+ * @param  {imgDomElement} img
+ * @param  {function} callback
+ * @return {undefined}
+ */
 function imgLoad(img, callback) {
     var timer = setInterval(function() {
         if (img.complete) {
@@ -30,7 +38,6 @@ function imgLoad(img, callback) {
 }
 
 function startListeningSelectionBoxCreation() {
-
     var annotation_color = "rgba(0,0,0,0.18)";
 
     $("#annotation_color_buttons_div").find("button").on("click", function() {
@@ -75,7 +82,6 @@ function startListeningSelectionBoxCreation() {
         });
         
         $("body").on("mouseup", function(e){
-            
             if ($(e.target).hasClass("PageImg") || $(e.target).hasClass("PageCanvas") || $(e.target).hasClass("Annotation")) {
                 var page_height = page.attr("height");
                 var page_width = page.attr("width");
@@ -111,6 +117,32 @@ function resizeAnnotations(scale_factor) {
         $(this).css("width", parseFloat($(this).css("width")) * scale_factor + "px");
         $(this).css("height", parseFloat($(this).css("height")) * scale_factor + "px");
         $(this).css("border_radius", parseFloat($(this).css("border_radius")) * scale_factor + "px");
+    });
+}
+
+/**
+ * scroll the specified page into fileViewer's visible window
+ * @param {int} pageIndex - the index of the page to be scroll to 
+ * @return {undefined}
+ */
+function scrollPageIntoView(pageIndex) {
+    var page_div_id = "page_div_" + pageIndex;
+    var pageDiv = $("#" + page_div_id);
+    var fileViewer = $("#fileViewer");
+    // "down" is the number of pixels to scroll the visible part down from the top of fileViewer
+    var down = pageDiv.offset().top - fileViewer.offset().top + fileViewer.scrollTop();
+    // animatedly scroll, 240 means the scrolling process take 240ms long
+    fileViewer.animate({scrollTop: parseInt(down)}, 240);
+}
+
+function prepareScrollPageIntoView() {
+    var input = $("#scroll_page_into_view_div").children("input");
+    var button = $("#scroll_page_into_view_div").children("button");
+    input.attr("min", "1");
+    input.attr("max", numPages.toString());
+    button.on("click", function() {
+        var pageIndex = input.val();
+        scrollPageIntoView(pageIndex);
     });
 }
 

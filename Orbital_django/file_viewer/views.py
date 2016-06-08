@@ -25,7 +25,7 @@ def display_file_viewer_page(request):
                 "comments": document.comment_set.order_by("-post_time"),
             }
 
-            return render(request, "file_viewer/comment_viewer_page.html", context)
+            return render(request, "file_viewer/comment_viewer_subpage.html", context)
 
         else:
             document = models.Document.objects.get(id=int(request.POST["document_id"]))
@@ -41,7 +41,7 @@ def display_file_viewer_page(request):
                 "comments": document.comment_set.order_by("-post_time"),
             }
 
-            return render(request, "file_viewer/comment_viewer_page.html", context)
+            return render(request, "file_viewer/comment_viewer_subpage.html", context)
 
     else:
         document = models.Document.objects.get(id = int(request.GET["document_id"]))
@@ -115,6 +115,7 @@ def display_file_viewer_page(request):
             return render(request, "file_viewer/pdf_file_viewer_page.html", context)
 
         context = {
+            "numPages": len(pages),
             "document": document,
             "pages": pages,
             "comments": document.comment_set.order_by("-post_time")
