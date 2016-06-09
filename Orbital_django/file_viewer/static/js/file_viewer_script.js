@@ -38,10 +38,10 @@ function imgLoad(img, callback) {
 }
 
 function startListeningSelectionBoxCreation() {
-    var annotation_color = "rgba(0,0,0,0.18)";
+    var annotationColor = "rgba(0,0,0,0.18)";
 
     $("#annotation_color_buttons_div").find("button").on("click", function() {
-        annotation_color = $(this).css("background-color");
+        annotationColor = $(this).css("background-color");
     });
 
     $(".PageImg, .PageCanvas").on("mousedown", function(e) {
@@ -56,7 +56,7 @@ function startListeningSelectionBoxCreation() {
         var new_annotation = $("<div class='Annotation'></div>");
         page.parents(".page_div, .PageDiv").append(new_annotation);
         new_annotation.css({
-            "background": annotation_color,
+            "background": annotationColor,
             "position": "absolute",
             "width": "1px",
             "height": "1px",
@@ -110,13 +110,13 @@ function startListeningSelectionBoxCreation() {
     });
 }
 
-function resizeAnnotations(scale_factor) {
+function resizeAnnotations(scaleFactor) {
     $(".Annotation").each(function() {
-        $(this).css("top", parseFloat($(this).css("top")) * scale_factor + "px");
-        $(this).css("left", parseFloat($(this).css("left")) * scale_factor + "px");
-        $(this).css("width", parseFloat($(this).css("width")) * scale_factor + "px");
-        $(this).css("height", parseFloat($(this).css("height")) * scale_factor + "px");
-        $(this).css("border_radius", parseFloat($(this).css("border_radius")) * scale_factor + "px");
+        $(this).css("top", parseFloat($(this).css("top")) * scaleFactor + "px");
+        $(this).css("left", parseFloat($(this).css("left")) * scaleFactor + "px");
+        $(this).css("width", parseFloat($(this).css("width")) * scaleFactor + "px");
+        $(this).css("height", parseFloat($(this).css("height")) * scaleFactor + "px");
+        $(this).css("border_radius", parseFloat($(this).css("border_radius")) * scaleFactor + "px");
     });
 }
 
@@ -126,9 +126,9 @@ function resizeAnnotations(scale_factor) {
  * @return {undefined}
  */
 function scrollPageIntoView(pageIndex) {
-    var page_div_id = "page_div_" + pageIndex;
-    var pageDiv = $("#" + page_div_id);
-    var fileViewer = $("#fileViewer");
+    var pageDivId = "page_div_" + pageIndex;
+    var pageDiv = $("#" + pageDivId);
+    var fileViewer = $("#file_viewer");
     // "down" is the number of pixels to scroll the visible part down from the top of fileViewer
     var down = pageDiv.offset().top - fileViewer.offset().top + fileViewer.scrollTop();
     // animatedly scroll, 240 means the scrolling process take 240ms long
@@ -146,7 +146,7 @@ function prepareScrollPageIntoView() {
     });
 }
 
-scale_factor = 1.08;
+scaleFactor = 1.08;
 
 $(document).ready(function() {
     markdown();
@@ -169,35 +169,35 @@ $(document).ready(function() {
 
     // img resize
     $("#buttonForLarger").on('click', function () {
-        $('.PageImg').css("width", parseFloat($(this).css("width")) * scale_factor + "px");
+        $('.PageImg').css("width", parseFloat($(this).css("width")) * scaleFactor + "px");
         $('.PageDiv').each(function() {
             var div = $(this);
-            div.css("height", (parseFloat(div.css("height")) - 6) * scale_factor + 6 + "px");
-            div.css("width", (parseFloat(div.css("width")) - 6) * scale_factor + 6 + "px");
+            div.css("height", (parseFloat(div.css("height")) - 6) * scaleFactor + 6 + "px");
+            div.css("width", (parseFloat(div.css("width")) - 6) * scaleFactor + 6 + "px");
         });
-        resizeAnnotations(scale_factor)
+        resizeAnnotations(scaleFactor)
     });
     $("#buttonForSmaller").on('click', function () {
-        $(".PageImg").css("width", parseFloat($(this).css("width")) / scale_factor + "px");
+        $(".PageImg").css("width", parseFloat($(this).css("width")) / scaleFactor + "px");
         $(".PageDiv").each(function() {
             var div = $(this);
-            div.css("height", (parseFloat(div.css("height")) - 6) / scale_factor + 6 + "px");
-            div.css("width", (parseFloat(div.css("width")) - 6) / scale_factor + 6 + "px");
+            div.css("height", (parseFloat(div.css("height")) - 6) / scaleFactor + 6 + "px");
+            div.css("width", (parseFloat(div.css("width")) - 6) / scaleFactor + 6 + "px");
         });
-        resizeAnnotations(1 / scale_factor)
+        resizeAnnotations(1 / scaleFactor)
     });
 
     $(document).ready(function () {
         var wrapper = $("#wrapper");
-        var fileViewer = $("#fileViewer");
+        var fileViewer = $("#file_viewer");
         //设置wrapper的高度
         wrapper.css("height", document.body.clientHeight - 24 + "px"); //jquery的css方法既可以设置css内容又可以获取css内容
         //设置fileViewer的高度和宽度
         fileViewer.css("height", wrapper.height() + "px");
         fileViewer.css("width", parseInt(wrapper.css("width")) * 0.6 + "px"); //jquery的css方法获得的是字符串，用js的parseInt获取数值
-        //设置commentsViewer的高度和宽度
-        $("#commentsViewer").css("height", wrapper.height() * 0.8 + "px");
-        $("#commentsViewer").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
+        //设置comments_viewer的高度和宽度
+        $("#comments_viewer").css("height", wrapper.height() * 0.8 + "px");
+        $("#comments_viewer").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
         //设置文档的大小
         $(".PageImg").css("width", fileViewer.width() - 24 + "px");
         $(".PageDiv").each(function() {
@@ -218,19 +218,19 @@ $(document).ready(function() {
     });
     $(window).resize(function () {
         var wrapper = $("#wrapper");
-        var fileViewer = $("#fileViewer");
+        var fileViewer = $("#file_viewer");
         wrapper.css("height", document.body.clientHeight - 24 + "px");
         fileViewer.css("height", wrapper.height() + "px");
         fileViewer.css("width", wrapper.width() * 0.6 + "px");
-        $("#commentsViewer").css("height", wrapper.height() * 0.8 + "px");
-        $("#commentsViewer").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
+        $("#comments_viewer").css("height", wrapper.height() * 0.8 + "px");
+        $("#comments_viewer").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
         //设置文档的大小
-        var original_width = parseFloat($(".PageImg").css("width"));
+        var originalWidth = parseFloat($(".PageImg").css("width"));
 
         $(".PageImg").css("width", fileViewer.width() - 24 + "px");
 
-        var new_width = parseFloat($(".PageImg").css("width"));
-        var scale_factor = new_width / original_width;
+        var newWidth = parseFloat($(".PageImg").css("width"));
+        var scaleFactor = newWidth / originalWidth;
 
         $(".PageDiv").each(function() {
             var div = $(this);
@@ -241,7 +241,7 @@ $(document).ready(function() {
             });
         });
 
-        resizeAnnotations(scale_factor)
+        resizeAnnotations(scaleFactor)
     });
 
     $("#show_annotation_frame_button").on('click', function() {

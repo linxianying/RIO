@@ -28,7 +28,7 @@
         {% include "file_viewer/nav_bar_subpage.html" %}
 
         <div id="wrapper">
-            <div id="fileViewer">
+            <div id="file_viewer">
                 {% for page in pages %}
                 <div class="PageDiv">
                     <img class="PageImg" src={{ page }}>
@@ -37,7 +37,7 @@
                 {% endfor %}
             </div>
 
-            <div id="commentsViewer">
+            <div id="comments_viewer">
                 <h1>wocao</h1>
                 <h1>wocao</h1>
                 <h1>wocao</h1>
@@ -106,10 +106,10 @@
     </body>
     <script>
         numPages = parseInt("{{ numPages }}");
-        var page_divs = $(".PageDiv");
+        var pageDivs = $(".PageDiv");
         // set id for each PageDiv
         for (var i = 1; i <= numPages; i++)
-            $(page_divs[i - 1]).attr("id", "page_div_" + i);
+            $(pageDivs[i - 1]).attr("id", "page_div_" + i);
         prepareScrollPageIntoView();
         startListeningSelectionBoxCreation();
     </script>

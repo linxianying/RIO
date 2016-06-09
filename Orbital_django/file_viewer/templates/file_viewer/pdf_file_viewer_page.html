@@ -33,11 +33,11 @@
         {% include "file_viewer/nav_bar_subpage.html" %}
 
         <div id="wrapper">
-            <div id="fileViewer">
+            <div id="file_viewer">
 
             </div>
 
-            <div id="commentsViewer">
+            <div id="comments_viewer">
                 <h1>wocao</h1>
                 <h1>wocao</h1>
                 <h1>wocao</h1>
@@ -173,7 +173,7 @@ function prepareAndRenderAll(scale) {
                 appendPages = appendPages + new_page;
             }
 
-            $("#fileViewer").append(appendPages);
+            $("#file_viewer").append(appendPages);
 
             $(".page_div").css("height", (sample__height + 6) + "px")
             $(".page_div").css("width", (sample__width + 6) + "px")
@@ -192,7 +192,7 @@ prepareAndRenderAll(scale);
 /*
 var previous = 1;
 
-$("#fileViewer").scroll(function() {
+$("#file_viewer").scroll(function() {
     var percentage = this.scrollTop / (this.scrollHeight - this.clientHeight);
     page_index = Math.round(percentage * numPages) + 1;
     if (page_index != previous) {
