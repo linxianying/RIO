@@ -2,10 +2,10 @@ from django.contrib import admin
 import models
 
 
-class FileModelAdmin(admin.ModelAdmin):
-    list_display = ["title", "file_field", "owner", "id"]
-    list_filter = ["title", "file_field", "owner", "id"]
-    search_fields = ["title", "file_field", "owner", "id"]
+class DocumentModelAdmin(admin.ModelAdmin):
+    list_display = ["title", "unique_file", "owner", "id"]
+    list_filter = ["title", "unique_file", "owner", "id"]
+    search_fields = ["title", "unique_file", "owner", "id"]
 
 
 class CommentModelAdmin(admin.ModelAdmin):
@@ -14,5 +14,12 @@ class CommentModelAdmin(admin.ModelAdmin):
     search_fields = ["content", "document_this_comment_belongs", "commenter", "num_like", "id"]
 
 
-admin.site.register(models.Document, FileModelAdmin)
+class UniqueFileModelAdmin(admin.ModelAdmin):
+    list_display = ["file_field", "md5", "id"]
+    list_filter = ["file_field", "md5", "id"]
+    search_fields = ["file_field", "md5", "id"]
+
+
+admin.site.register(models.Document, DocumentModelAdmin)
 admin.site.register(models.Comment, CommentModelAdmin)
+admin.site.register(models.UniqueFile, UniqueFileModelAdmin)

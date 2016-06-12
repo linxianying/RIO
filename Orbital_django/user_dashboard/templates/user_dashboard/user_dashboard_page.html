@@ -129,7 +129,7 @@
 <div class = "col-md-7 col-md-offset-5">
     <h3>My Documents</h3>
     <ol>
-        {% for file in current_user.document_set.all %}
+        {% for document in current_user.document_set.all %}
         <li>
             <div class = "col-md-11" id = "list-files">
                 <tbody>
@@ -137,17 +137,17 @@
                         <form method="get" action="/file_viewer/" style="display: inline-block; font-family: arial; color: white">
                             {% csrf_token %}
                             <td scope = "col">
-                                {{ file.title }}
+                                {{ document.title }}
                             </td>
                             <td>
-                                <button type="submit" name="document_id" value={{ file.id }} class="button2">open</button>
+                                <button type="submit" name="document_id" value={{ document.id }} class="button2">open</button>
                             </td>
                         </form>
 
                         <td>
                             <form method="post" action="/user_dashboard/handle_delete" style="display: inline-block;">
                                 {% csrf_token %}
-                                <button type="submit" name="document_id" class="button2" value={{ file.id }}>delete</button>
+                                <button type="submit" name="document_id" class="button2" value={{ document.id }}>delete</button>
                             </form>
                         </td>
                     </tr>

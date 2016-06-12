@@ -15,10 +15,15 @@ def upload_to(instance, filename):
 
 class User(AbstractBaseUser):
     nickname = models.CharField(max_length=254)
+
     email_address = models.EmailField(max_length=254)
-    # pass fields inherited from super class
+
+    # field "password" inherited from AbstractBaseUser
+
     level = models.IntegerField(default=0)
+
     is_member = models.BooleanField(default=False)
+
     portrait = models.ImageField(upload_to=upload_to, blank=True, null=True)
 
     @property
@@ -28,16 +33,18 @@ class User(AbstractBaseUser):
         else:
             return "media/portrait/default_portrait.png"
 
-    # the following fields and methods (*) are required our extended User class
-    # so that it can use the same UserManager and other service just as the built in User class
-    USERNAME_FIELD = "email_address"  # (*)
+    # the following fields and methods (*) are from AbstractBaseUser
+
     # get_username will return this field
     # also, this is the unique identification of a user
+    USERNAME_FIELD = "email_address"  # (*)
+
     REQUIRED_FIELDS = ["nickname", "email_address", "password"]  # (*)
-    is_active = True  # (*)
+
     # temporarily just make it True,
     # in the future may use how long this user has not logged in
     # to decide whether this account is active or not
+    is_active = True  # (*)
 
     def get_full_name(self):  # (*)
         return self.nickname + "<" + self.email_address + ">" + "level:" + str(self.level) + " member:" + str(self.is_member)
@@ -56,8 +63,8 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.get_full_name()
 
-    # the following are required when i use admin to see the data.
-    # at present, i do not know why they are needed and their mechanism
+    # the following are required if i want to use this User model to log into admin site
+    
     def is_superuser(self):
         return True
 

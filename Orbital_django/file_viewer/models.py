@@ -8,31 +8,39 @@ import shutil
 
 def upload_to(instance, filename):
     name_without_extension, extension = filename.split(".")
-    # if a user with sign-in email = user@email.com uploads file name.jpeg
-    # the file will be store at media/user@email.com/jpeg/name.jpeg
-    return '{0}/{1}/{2}'.format(instance.owner.email_address, extension, filename)
+    # if a user uploads file name.jpeg
+    # the file will be store at media/jpeg/name.jpeg
+    return '{0}/{1}'.format(extension, filename)
+
+
+class UniqueFile(models.Model):
+    file_field = models.FileField(upload_to=upload_to)
+    md5 = models.CharField(max_length=32)
+
+    def __unicode__(self):
+        return self.file_field.name
 
 
 class Document(models.Model):
     title = models.CharField(max_length=1028)
-    file_field = models.FileField(upload_to=upload_to)
-    owner = models.ForeignKey(home_models.User)  # many File to one User
+    owner = models.ForeignKey(home_models.User)  # many Documents to one User
+    unique_file = models.ForeignKey(UniqueFile)  # many Documents to one UniqueFile
 
-    def __str__(self):
-        return self.file_field.name
+    def __unicode__(self):
+        return self.title
 
 
 # before the Model.delete() and QuerySet.delete() are called, this method will execute first
-@receiver(models.signals.pre_delete, sender=Document)
+@receiver(models.signals.pre_delete, sender=UniqueFile)
 # "sender" and "**kwargs" are required though they are of no use here, do not delete them
 def delete_local_file(sender, instance, **kwargs):
     # get the location of the file to be deleted.
-    # eg: 845426589@qq.com/jpg/1.jpg
+    # eg: jpg/1.jpg
     file_location = instance.file_field.name
 
     file_local_location = instance.file_field.storage.path(instance.file_field)
     file_local_dirname, file_name_and_extension = os.path.split(file_local_location)
-    file_name, extension = file_name_and_extension.split(".")
+    file_name = file_name_and_extension.split(".")[0]
     associated_folder_local_location = os.path.join(file_local_dirname, file_name)
     type_level_dir_name = os.path.dirname(file_local_location)
 
@@ -42,29 +50,23 @@ def delete_local_file(sender, instance, **kwargs):
     # associated with the corresponding file_field of the model to be deleted
     instance.file_field.storage.delete(file_location)
 
-    # delete associate image folder
+    # delete associate image folder (for zip files, rar files and so on)
     if os.path.isdir(associated_folder_local_location):
         shutil.rmtree(associated_folder_local_location)
 
     # if the type-level folder such as folder named "doc" or "pdf" is empty
-    # that is, if the user does not have documents of this type
+    # that is, if there is no UniqueFile of this type
     # then delete this type_level folder
     if os.path.isdir(type_level_dir_name) and os.listdir(type_level_dir_name).__len__() == 0:
-        user_level_dir_name = os.path.dirname(type_level_dir_name)
         os.rmdir(type_level_dir_name)
-        # if the user-level folder is empty
-        # that is, if the user does not have any documents
-        # then delete this user_level folder
-        if os.path.isdir(user_level_dir_name) and os.listdir(user_level_dir_name).__len__() == 0:
-            os.rmdir(user_level_dir_name)
 
 
 class Comment(models.Model):
     post_time = models.DateTimeField(auto_now=False, auto_now_add=True)
-    commenter = models.ForeignKey(home_models.User)  # many Comment to one User
-    document_this_comment_belongs = models.ForeignKey(Document)
+    commenter = models.ForeignKey(home_models.User)  # many Comments to one User
+    document_this_comment_belongs = models.ForeignKey(Document)  # many Commments to one Document
     content = models.TextField()
     num_like = models.IntegerField(default=0)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.content

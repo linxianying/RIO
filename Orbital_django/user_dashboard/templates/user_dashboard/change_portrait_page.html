@@ -113,7 +113,6 @@
                     images.onload = function(){
                         ctx.drawImage(images,img_left_margin, img_top_margin, img_height, img_width, 0, 0, img_height, img_width);
                         document.getElementById('save_icon').getElementsByTagName('img').src = canvas.toDataURL();
-                        // console.log("!!!!!!!: " + canvas.toDataURL())
                         $.ajax({
                             url:"/user_dashboard/change_portrait",
                             type:"post",
@@ -126,38 +125,6 @@
                             },
                         });
                     };
-
-                    /*
-                    var data=canvas.toDataURL();
-                    
-                    data=data.split(',')[1];
-                    data=window.atob(data);
-                    var ia = new Uint8Array(data.length);
-                    for (var i = 0; i < data.length; i++) {
-                        ia[i] = data.charCodeAt(i);
-                    };
-                    var blob = new Blob([ia], {type:"image/png"});
-
-                    console.log(blob.type);
-                    console.log(canvas.toDataURL());
-                    var fd = new FormData();
-                    fd.append('file',blob);fd.append('csrfmiddlewaretoken',"{{csrf_token}}");
-                    $.ajax({
-                        url:"/user_dashboard/change_portrait",
-                        type:"post",
-                        data: fd,
-                        contentType: false, //必须
-                        processData: false, //必须
-                        success:function(){
-
-                        },
-                        error: function (xhr, ajaxOptions, thrownError) {
-                            alert(xhr.status);
-                            alert(thrownError);
-                            alert(xhr.responseText);
-                        }
-                    });
-                    */
                 }
             });
         </script>
@@ -273,7 +240,7 @@
         <!-- <input id="file_preview" type="file"/> -->
         <form enctype="multipart/form-data" action = "/user_dashboard/change_portrait" method = "post">
             <!-- {% csrf_token %} -->
-            <input id= "file_preview" name = "portrait_upload" type="file" class="form-control input-sm" required="required">
+            <input id= "file_preview" name = "portrait_upload" type="file" class="form-control input-sm" required="required" accept="image/*">
             <button class="button2" type="button" id="save_button">Save</button>
         </form>
         <button class="button2" type="button" id="change">Change image</button>

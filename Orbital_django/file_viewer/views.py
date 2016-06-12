@@ -35,6 +35,7 @@ def display_file_viewer_page(request):
             comment.document_this_comment_belongs = document
             comment.save()
             document.comment_set.add(comment)
+            comment.commenter.comment_set.add(comment)
 
             context = {
                 "document": document,
@@ -45,9 +46,10 @@ def display_file_viewer_page(request):
 
     else:
         document = models.Document.objects.get(id = int(request.GET["document_id"]))
+        file = document.unique_file
 
-        file_position = document.file_field.storage.path(document.file_field)
-        file_url = document.file_field.url
+        file_position = file.file_field.storage.path(file.file_field)
+        file_url = file.file_field.url
 
         file_dirname, file_name_and_extension = os.path.split(file_position)
         file_name, extension = file_name_and_extension.split(".")

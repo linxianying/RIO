@@ -6,6 +6,8 @@ from django.http import HttpResponse
 import re
 import os
 import Orbital_django.settings as settings
+from hashlib import md5
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def handle_log_out(request):
@@ -16,21 +18,30 @@ def handle_log_out(request):
 def handle_file_upload(request):
     user = get_user(request)  # get the current user who is logged in and sends this request
 
-    document = models.Document()  # create a empty Document instance
+    file_upload = request.FILES["file_upload"]  # this is an UploadedFile object
+    this_file_md5 = md5(file_upload.read()).hexdigest()
 
-    document.owner = user  # set the owner
-    document.file_field = request.FILES["file_upload"]  # set the file_field
-    document.title = request.POST["title"]  # set the title
+    try: 
+        unique_file = models.UniqueFile.objects.get(md5=this_file_md5)
+    except ObjectDoesNotExist:
+        unique_file = models.UniqueFile(file_field=file_upload, md5=this_file_md5)
+        unique_file.save()
 
+    document = models.Document(owner=user, unique_file=unique_file, title=request.POST["title"])
     document.save()  # save this document to the database
 
-    user.document_set.add(document)  # add this document to the user's document_set
+    user.document_set.add(document)
+    unique_file.document_set.add(document)
+
     return redirect("user_dashboard")
 
 
 def handle_delete(request):
     document = models.Document.objects.get(id=int(request.POST["document_id"]))
+    unique_file = document.unique_file
     document.delete()
+    if len(unique_file.document_set.all()) == 0:
+        unique_file.delete()
     return redirect("user_dashboard")
 
 
