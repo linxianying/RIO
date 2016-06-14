@@ -38,10 +38,7 @@ def handle_file_upload(request):
 
 def handle_delete(request):
     document = models.Document.objects.get(id=int(request.POST["document_id"]))
-    unique_file = document.unique_file
     document.delete()
-    if len(unique_file.document_set.all()) == 0:
-        unique_file.delete()
     return redirect("user_dashboard")
 
 

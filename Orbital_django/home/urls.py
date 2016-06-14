@@ -13,4 +13,6 @@ urlpatterns = [
 
     # urls for log_in
     url(r'^handle_log_in', views.handle_log_in, name = "handle_log_in"),
+
+    url(r'^handle_search', views.handle_search, name = "handle_search"),
 ]

@@ -118,7 +118,6 @@ var scale = 0.8;
  */
 function renderPages(num, rest, scale) {
     pdfDoc.getPage(num).then(function(page) {
-
         next_page_canvas_id = "page_canvas_" + num;
         var canvas = document.getElementById(next_page_canvas_id);
         var context = canvas.getContext('2d');

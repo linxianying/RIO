@@ -169,22 +169,34 @@ $(document).ready(function() {
 
     // img resize
     $("#buttonForLarger").on('click', function () {
-        $('.PageImg').css("width", parseFloat($(this).css("width")) * scaleFactor + "px");
-        $('.PageDiv').each(function() {
-            var div = $(this);
-            div.css("height", (parseFloat(div.css("height")) - 6) * scaleFactor + 6 + "px");
-            div.css("width", (parseFloat(div.css("width")) - 6) * scaleFactor + 6 + "px");
-        });
-        resizeAnnotations(scaleFactor)
-    });
-    $("#buttonForSmaller").on('click', function () {
-        $(".PageImg").css("width", parseFloat($(this).css("width")) / scaleFactor + "px");
+        var oldScrollHeight = $("#file_viewer")[0].scrollHeight;
+        
+        $('.PageImg').css("width", parseFloat($('.PageImg').css("width")) * scaleFactor + "px");
         $(".PageDiv").each(function() {
             var div = $(this);
-            div.css("height", (parseFloat(div.css("height")) - 6) / scaleFactor + 6 + "px");
-            div.css("width", (parseFloat(div.css("width")) - 6) / scaleFactor + 6 + "px");
+            var img = div.children(".PageImg");
+            div.css("width", img.width() + 6 + "px");
+            div.css("height", img.height() + 6 + "px");              
         });
-        resizeAnnotations(1 / scaleFactor)
+        resizeAnnotations(scaleFactor);
+
+        var factor = $("#file_viewer")[0].scrollHeight / oldScrollHeight
+        $("#file_viewer").scrollTop(parseFloat($("#file_viewer").scrollTop()) * factor);
+    });
+    $("#buttonForSmaller").on('click', function () {
+        var oldScrollHeight = $("#file_viewer")[0].scrollHeight;
+      
+        $(".PageImg").css("width", parseFloat($('.PageImg').css("width")) / scaleFactor + "px");
+        $(".PageDiv").each(function() {
+            var div = $(this);
+            var img = div.children(".PageImg");
+            div.css("width", img.width() + 6 + "px");
+            div.css("height", img.height() + 6 + "px");               
+        });
+        resizeAnnotations(1 / scaleFactor);
+
+        var factor = $("#file_viewer")[0].scrollHeight / oldScrollHeight
+        $("#file_viewer").scrollTop(parseFloat($("#file_viewer").scrollTop()) * factor);
     });
 
     $(document).ready(function () {
@@ -204,16 +216,15 @@ $(document).ready(function() {
             var div = $(this);
             var img = div.children(".PageImg");
             imgLoad(img[0], function() {
-                div.css("height", img.height() + 6 + "px");
                 div.css("width", img.width() + 6 + "px");
+                div.css("height", img.height() + 6 + "px");
             });
             /* this is not correct when images are gotten from cache rather than loaded from url
                "complete" is true when the image is shown
                "load" is triggered when the image is loaded from url
             img.load(function() {
                 div.css("height", img.height() + 6 + "px");
-            });
-            */
+            });*/
         });
     });
     $(window).resize(function () {
@@ -229,18 +240,17 @@ $(document).ready(function() {
 
         $(".PageImg").css("width", fileViewer.width() - 24 + "px");
 
-        var newWidth = parseFloat($(".PageImg").css("width"));
-        var scaleFactor = newWidth / originalWidth;
-
         $(".PageDiv").each(function() {
             var div = $(this);
             var img = div.children(".PageImg");
             imgLoad(img[0], function() {
-                div.css("height", img.height() + 6 + "px");
                 div.css("width", img.width() + 6 + "px");
+                div.css("height", img.height() + 6 + "px");
             });
         });
 
+        var newWidth = parseFloat($(".PageImg").css("width"));
+        var scaleFactor = newWidth / originalWidth;
         resizeAnnotations(scaleFactor)
     });
 

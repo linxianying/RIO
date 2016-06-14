@@ -21,15 +21,6 @@ class UniqueFile(models.Model):
         return self.file_field.name
 
 
-class Document(models.Model):
-    title = models.CharField(max_length=1028)
-    owner = models.ForeignKey(home_models.User)  # many Documents to one User
-    unique_file = models.ForeignKey(UniqueFile)  # many Documents to one UniqueFile
-
-    def __unicode__(self):
-        return self.title
-
-
 # before the Model.delete() and QuerySet.delete() are called, this method will execute first
 @receiver(models.signals.pre_delete, sender=UniqueFile)
 # "sender" and "**kwargs" are required though they are of no use here, do not delete them
@@ -59,6 +50,22 @@ def delete_local_file(sender, instance, **kwargs):
     # then delete this type_level folder
     if os.path.isdir(type_level_dir_name) and os.listdir(type_level_dir_name).__len__() == 0:
         os.rmdir(type_level_dir_name)
+
+
+class Document(models.Model):
+    title = models.CharField(max_length=1028)
+    owner = models.ForeignKey(home_models.User)  # many Documents to one User
+    unique_file = models.ForeignKey(UniqueFile)  # many Documents to one UniqueFile
+
+    def __unicode__(self):
+        return self.title
+
+
+@receiver(models.signals.post_delete, sender=Document)
+def may_delete_unique_file(sender, instance, **kwargs):
+    unique_file = instance.unique_file
+    if len(unique_file.document_set.all()) == 0:
+        unique_file.delete()
 
 
 class Comment(models.Model):

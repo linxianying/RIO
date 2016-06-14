@@ -12,6 +12,8 @@ from django.shortcuts import redirect
 import models
 import random
 
+from file_viewer.models import Document
+
 
 def display_home_page(request):
     return render(request, "home/home_page.html")
@@ -91,3 +93,12 @@ def handle_sign_up(request):
     elif post_result_dic.__contains__("leave"):
         email_address = post_result_dic["email_address"]
         del temp_user_information_dic[email_address]
+
+
+def handle_search(request):
+    search_key = request.GET["search_key"]
+    result_documents = Document.objects.filter(title__icontains=search_key)  # case-insensitive contain
+    context = {
+        "result_documents": result_documents,  
+    }
+    return render(request, "home/search_result_page.html", context)
