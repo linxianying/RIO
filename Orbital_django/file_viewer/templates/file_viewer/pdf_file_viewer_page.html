@@ -107,39 +107,117 @@
 
 <script>
 var pdfDoc;
-var scale = 0.8;
+var scale = 1;
+var finishList = [];
+var taskList = [];
+var rendering = false;
+var scaleFactor = 1.08;
+var sampleWidth;
+var sampleHeight;
+    
+$("#buttonForLarger").on('click', function () {
+    scale *= scaleFactor;
+    
+    if (taskList.length > 0) {
+        while (taskList.length > 1) 
+            taskList.pop();
+        taskList.push([taskList[0][0], "PENDING", null])
+    }
 
-/**
- * start from the "num"th page (included), rendered the following "rest" pages
- * @param  {int} num - the index of the page where rendering start
- * @param  {int} rest - total number of continual pages that will be rendered
- * @param  {float} scale - the scale of rendering
- * @return {undefined}    
- */
-function renderPages(num, rest, scale) {
-    pdfDoc.getPage(num).then(function(page) {
-        next_page_canvas_id = "page_canvas_" + num;
-        var canvas = document.getElementById(next_page_canvas_id);
-        var context = canvas.getContext('2d');
-        var viewport = page.getViewport(scale);
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+    for(var i = 0; i < finishList.length; i++) {
+        var id = "page_canvas_" + finishList[i];
+        var pre = document.getElementById(id);
+        pre.width = 0; 
+        pre.height = 0; 
+        taskList.push([finishList[i], "PENDING", null]);
+    }
 
-        var renderContext = {
-            canvasContext: context,
-            viewport: viewport
-        };
-        
-        var renderTask = page.render(renderContext);
-
-        // when the rendering of the current page is finished, 
-        // if this is not the last page, and, if 
-        // render the next page         
-        renderTask.promise.then(function() {
-            if (num < pdfDoc.numPages && rest > 1)
-                renderPages(num + 1, rest - 1, scale);
-        });
+    finishList = [];
+    if(!rendering)
+        renderTaskList(taskList, finishList, scale);
+    
+    var oldScrollHeight = $("#file_viewer")[0].scrollHeight;
+    
+    sampleWidth *= scaleFactor;
+    sampleHeight *= scaleFactor;
+    $(".page_div").each(function() {
+        var div = $(this);
+        div.css("width", sampleWidth + 6 + "px");
+        div.css("height", sampleHeight + 6 + "px");              
     });
+    resizeAnnotations(scaleFactor);
+
+    var factor = $("#file_viewer")[0].scrollHeight / oldScrollHeight
+    $("#file_viewer").scrollTop(parseFloat($("#file_viewer").scrollTop()) * factor);
+});
+$("#buttonForSmaller").on('click', function () {
+    scale /= scaleFactor;
+    
+    if (taskList.length > 0) {
+        while (taskList.length > 1) 
+            taskList.pop();
+        taskList.push([taskList[0][0], "PENDING", null])
+    }
+
+    for(var i = 0; i < finishList.length; i++) {
+        var id = "page_canvas_" + finishList[i];
+        var pre = document.getElementById(id);
+        pre.width = 0; 
+        pre.height = 0; 
+        taskList.push([finishList[i], "PENDING", null]);
+    }
+
+    finishList = [];
+    if(!rendering)
+        renderTaskList(taskList, finishList, scale);
+    
+    var oldScrollHeight = $("#file_viewer")[0].scrollHeight;
+    
+    sampleWidth /= scaleFactor;
+    sampleHeight /= scaleFactor;
+    $(".page_div").each(function() {
+        var div = $(this);
+        div.css("width", sampleWidth + 6 + "px");
+        div.css("height", sampleHeight + 6 + "px");              
+    });
+    resizeAnnotations(1 / scaleFactor);
+
+    var factor = $("#file_viewer")[0].scrollHeight / oldScrollHeight
+    $("#file_viewer").scrollTop(parseFloat($("#file_viewer").scrollTop()) * factor);
+});
+
+function renderTaskList(taskList, finishList, scale) {
+    if (taskList.length > 0) {
+        rendering = true;
+        $("#buttonForLarger, #buttonForSmaller").attr("disabled", true);
+        var num = taskList[0][0];
+        pdfDoc.getPage(num).then(function(page) {
+            var page_canvas_id = "page_canvas_" + num;
+            var canvas = document.getElementById(page_canvas_id);
+            var context = canvas.getContext('2d');
+            var viewport = page.getViewport(scale);
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            var renderContext = {
+                canvasContext: context,
+                viewport: viewport,
+            };
+            
+            taskList[0][2] = page.render(renderContext);  // taskList[0][2] is a RenderTask object
+            taskList[0][1] = "RENDERING";
+         
+            taskList[0][2].promise.then(function() {
+                taskList.shift();
+                finishList.push(num);
+                rendering = false;
+                $("#buttonForLarger, #buttonForSmaller").attr("disabled", false　);
+                renderTaskList(taskList, finishList, scale);
+            }, function (reason) {
+              console.log("rejected because of this reason: " + reason);
+            });
+        });
+    }
 }
 
 function prepareAndRenderAll(scale) {
@@ -149,24 +227,24 @@ function prepareAndRenderAll(scale) {
     PDFJS.getDocument(url).then(function(pdf) {
         pdfDoc = pdf;
         
-        // assign value to global variabe: numPages, this variable is to used with scroll bar to recognize which page the reader is reading
         numPages = pdfDoc.numPages;
         prepareScrollPageIntoView();
         
         // create the same number of canvases as pages
         // also 
-        // initialize the canvases' height and width according to the first
+        // initialize the canvases' height and width according to the first page
         pdfDoc.getPage(1).then(function(sample_page) {
+            samplePage = sample_page;
             var appendPages = ""
-            var sample__height = sample_page.getViewport(scale).height;
-            var sample__width = sample_page.getViewport(scale).width;
+            sampleHeight = sample_page.getViewport(scale).height;
+            sampleWidth = sample_page.getViewport(scale).width;
 
             for (var i = 1; i <= pdfDoc.numPages; i++) {
                 new_page_div_id = "page_div_" + i;
                 new_page_canvas_id = "page_canvas_" + i;
 
                 new_page = "<div class='page_div' id=" + "'" + new_page_div_id +  "'>" + 
-                            "<canvas class='PageCanvas' id=" + "'" + new_page_canvas_id + "'" + "></canvas>" +
+                            "<canvas class='PageCanvas' id=" + "'" + new_page_canvas_id + "'" + "></canvas>" + 
                             "</div>" +
                             "<br>";
                 appendPages = appendPages + new_page;
@@ -174,35 +252,76 @@ function prepareAndRenderAll(scale) {
 
             $("#file_viewer").append(appendPages);
 
-            $(".page_div").css("height", (sample__height + 6) + "px")
-            $(".page_div").css("width", (sample__width + 6) + "px")
+            $(".page_div").css("height", (sampleHeight + 6) + "px")
+            $(".page_div").css("width", (sampleWidth + 6) + "px")
 
             startListeningSelectionBoxCreation();
 
         });
 
-        // start from the first page, render all following pages
-        renderPages(1, Infinity, scale);
+        taskList.push([Math.min(numPages, 1), "PENDING", null]);
+        taskList.push([Math.min(numPages, 2), "PENDING", null]);
+        taskList.push([Math.min(numPages, 3), "PENDING", null]);
+        taskList.push([Math.min(numPages, 4), "PENDING", null]);
+        taskList.push([Math.min(numPages, 5), "PENDING", null]);
+        renderTaskList(taskList, finishList, scale);
+
+        startListeningScroll();
     });
 }
 
 prepareAndRenderAll(scale);
 
-/*
-var previous = 1;
+function startListeningScroll() {
+    var previous = 1;
 
-$("#file_viewer").scroll(function() {
-    var percentage = this.scrollTop / (this.scrollHeight - this.clientHeight);
-    page_index = Math.round(percentage * numPages) + 1;
-    if (page_index != previous) {
-        var id = "page_canvas_" + previous;
-        previous = page_index;
-        var pre = document.getElementById(id);
-        pre.getContext('2d').clearRect(0, 0, pre.width, pre.height);
-        renderPages(page_index, 1, scale)
-    }
-});
-*/
+    $("#file_viewer").scroll(function() {
+        var percentage = this.scrollTop / this.scrollHeight;
+        page_index = Math.ceil(percentage * numPages);
+        if (page_index != previous) {
+
+            // console.log(finishList);
+            // for(var i = 0; i < taskList.length; i++)
+            //     console.log(taskList[i])
+
+            previous = page_index;
+
+            var renderOrNot = [true, true, true, true, true];
+            // clear pages which are out of view
+            var index = 0;
+            var originalLength = finishList.length
+            for (var i = 0; i < originalLength; i++) {
+                if (finishList[index] - page_index >= -1 && finishList[index] - page_index <= 3) {
+                    renderOrNot[finishList[index] - page_index + 1] = false;
+                    index += 1;
+                }
+                else {
+                    var id = "page_canvas_" + finishList[index];
+                    var pre = document.getElementById(id);
+                    pre.width = 0; 
+                    pre.height = 0; 
+                    //pre.getContext('2d').clearRect(0, 0, pre.width, pre.height);
+                    finishList.splice(index, 1);
+                }
+            }
+
+            // keep the first renderTask since it is still in RENDERING status,
+            // delete the rest since they are in PENDING status
+            while (taskList.length > 1) {
+                taskList.pop();
+            }
+
+            // add in the new task
+            for (var i = 0; i < 5; i++) {
+                if (renderOrNot[i] == true)
+                    taskList.push([Math.min(numPages, Math.max(1, page_index + i - 1)), "PENDING", null]);
+            }
+
+            if (!rendering)
+                renderTaskList(taskList, finishList, scale);
+        }
+    });
+}
 </script>
 
 </html>

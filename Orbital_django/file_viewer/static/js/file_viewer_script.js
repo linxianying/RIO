@@ -169,34 +169,38 @@ $(document).ready(function() {
 
     // img resize
     $("#buttonForLarger").on('click', function () {
-        var oldScrollHeight = $("#file_viewer")[0].scrollHeight;
-        
-        $('.PageImg').css("width", parseFloat($('.PageImg').css("width")) * scaleFactor + "px");
-        $(".PageDiv").each(function() {
-            var div = $(this);
-            var img = div.children(".PageImg");
-            div.css("width", img.width() + 6 + "px");
-            div.css("height", img.height() + 6 + "px");              
-        });
-        resizeAnnotations(scaleFactor);
+        if ($("canvas").length == 0) {
+            var oldScrollHeight = $("#file_viewer")[0].scrollHeight;
+            
+            $('.PageImg').css("width", parseFloat($('.PageImg').css("width")) * scaleFactor + "px");
+            $(".PageDiv").each(function() {
+                var div = $(this);
+                var img = div.children(".PageImg");
+                div.css("width", img.width() + 6 + "px");
+                div.css("height", img.height() + 6 + "px");              
+            });
+            resizeAnnotations(scaleFactor);
 
-        var factor = $("#file_viewer")[0].scrollHeight / oldScrollHeight
-        $("#file_viewer").scrollTop(parseFloat($("#file_viewer").scrollTop()) * factor);
+            var factor = $("#file_viewer")[0].scrollHeight / oldScrollHeight
+            $("#file_viewer").scrollTop(parseFloat($("#file_viewer").scrollTop()) * factor);
+        }
     });
     $("#buttonForSmaller").on('click', function () {
-        var oldScrollHeight = $("#file_viewer")[0].scrollHeight;
-      
-        $(".PageImg").css("width", parseFloat($('.PageImg').css("width")) / scaleFactor + "px");
-        $(".PageDiv").each(function() {
-            var div = $(this);
-            var img = div.children(".PageImg");
-            div.css("width", img.width() + 6 + "px");
-            div.css("height", img.height() + 6 + "px");               
-        });
-        resizeAnnotations(1 / scaleFactor);
+        if ($("canvas").length == 0) {
+            var oldScrollHeight = $("#file_viewer")[0].scrollHeight;
+          
+            $(".PageImg").css("width", parseFloat($('.PageImg').css("width")) / scaleFactor + "px");
+            $(".PageDiv").each(function() {
+                var div = $(this);
+                var img = div.children(".PageImg");
+                div.css("width", img.width() + 6 + "px");
+                div.css("height", img.height() + 6 + "px");               
+            });
+            resizeAnnotations(1 / scaleFactor);
 
-        var factor = $("#file_viewer")[0].scrollHeight / oldScrollHeight
-        $("#file_viewer").scrollTop(parseFloat($("#file_viewer").scrollTop()) * factor);
+            var factor = $("#file_viewer")[0].scrollHeight / oldScrollHeight
+            $("#file_viewer").scrollTop(parseFloat($("#file_viewer").scrollTop()) * factor);
+        }
     });
 
     $(document).ready(function () {
