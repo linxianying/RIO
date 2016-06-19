@@ -91,7 +91,24 @@ function startListeningSelectionBoxCreation() {
                 var width_percent = new_annotation.css("width") / page_width;
 
                 new_annotation.draggable({ containment: "parent" }).resizable({ containment: "parent" });
-                $('#annotation_modal').modal('toggle');
+                
+                // show post-annotation window
+                var annotationWindow = layer.open({
+                    type: 1,
+                    title: "Post Annotation",
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['380px', '280px'],
+                    content:    '<form id="comment_form">\
+                                    <textarea name="comment_content" class="form-control" rows="8" style="resize: vertical"></textarea>\
+                                    <!--i use ajax to submit instead of using submit button-->\
+                                    <button id="post_comment_button" type="button" class="btn btn-info" name="document_id" value="{{ document.id }}"\ style="margin-top: 8px; float: right;">post annotation</button>\
+                                </form>',
+                    cancel: function() { //窗口被关闭的回调函数：当窗口被关闭，annotation选定框也一并删除
+                        new_annotation.remove();
+                    }
+                });
                 
                 $(".PageImg, .PageCanvas, .Annotation").off("mousemove");
                 $("body").off("mouseup");
