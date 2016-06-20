@@ -11,10 +11,16 @@ from django.http import HttpResponse
 def display_file_viewer_page(request):
 
     if request.method == "POST":
-        if request.POST["operation"] == "like":
+        if request.POST["operation"] == "like_comment":
             comment = models.Comment.objects.get(id=int(request.POST["comment_id"]))
             comment.num_like += 1
             comment.save()
+            return HttpResponse()
+
+        if request.POST["operation"] == "like_annotation":
+            annotation = models.Annotation.objects.get(id=int(request.POST["annotation_id"]))
+            annotation.num_like += 1
+            annotation.save()
             return HttpResponse()
 
         elif request.POST["operation"] == "refresh":
@@ -27,7 +33,7 @@ def display_file_viewer_page(request):
 
             return render(request, "file_viewer/comment_viewer_subpage.html", context)
 
-        else:
+        elif request.POST["operation"] == "comment":
             document = models.Document.objects.get(id=int(request.POST["document_id"]))
             comment = models.Comment()
             comment.content = request.POST["comment_content"]
@@ -43,6 +49,29 @@ def display_file_viewer_page(request):
             }
 
             return render(request, "file_viewer/comment_viewer_subpage.html", context)
+
+        elif request.POST["operation"] == "annotate":
+            document = models.Document.objects.get(id=int(request.POST["document_id"]))
+            annotation = models.Annotation()
+            annotation.content = request.POST["annotation_content"]
+            annotation.annotator = get_user(request)
+            annotation.document_this_annotation_belongs = document
+            annotation.page_id = request.POST["page_id"]
+            annotation.height_percent = request.POST["height_percent"]
+            annotation.width_percent = request.POST["width_percent"]
+            annotation.top_percent = request.POST["top_percent"]
+            annotation.left_percent = request.POST["left_percent"]
+            annotation.frame_color = request.POST["frame_color"]
+            annotation.save()
+            document.annotation_set.add(annotation)
+            annotation.annotator.annotation_set.add(annotation)
+
+            context = {
+                "document": document,
+                "annotations": document.annotation_set.order_by("-post_time"),
+            }
+
+            return render(request, "file_viewer/annotation_viewer_subpage.html", context)
 
     else:
         document = models.Document.objects.get(id = int(request.GET["document_id"]))
@@ -114,6 +143,7 @@ def display_file_viewer_page(request):
                 "document": document,
                 "file_url": file_url[1:],
                 "comments": document.comment_set.order_by("-post_time"),
+                "annotations": document.annotation_set.order_by("-post_time"),
             }
             return render(request, "file_viewer/pdf_file_viewer_page.html", context)
 
@@ -122,5 +152,6 @@ def display_file_viewer_page(request):
             "document": document,
             "pages": pages,
             "comments": document.comment_set.order_by("-post_time"),
+            "annotations": document.annotation_set.order_by("-post_time"),
         }
         return render(request, "file_viewer/file_viewer_page.html", context)

@@ -8,6 +8,7 @@ import os
 import Orbital_django.settings as settings
 from hashlib import md5
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
 
 
 def handle_log_out(request):
@@ -42,6 +43,7 @@ def handle_delete(request):
     return redirect("user_dashboard")
 
 
+@login_required(login_url='/')
 def display_user_dashboard(request):
     current_user = get_user(request)
     return render(request, "user_dashboard/user_dashboard_page.html", {"current_user": current_user})

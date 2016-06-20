@@ -60,7 +60,7 @@ class User(AbstractBaseUser):
 
     # set_password method inherited from super class
 
-    def __str__(self):
+    def __unicode__(self):
         return self.get_full_name()
 
     # the following are required if i want to use this User model to log into admin site

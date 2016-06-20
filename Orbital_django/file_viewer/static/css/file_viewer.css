@@ -2,7 +2,7 @@
 * @Author: Roy
 * @Date:   2016-06-05 09:09:27
 * @Last Modified by:   Roy
-* @Last Modified time: 2016-06-19 17:12:29
+* @Last Modified time: 2016-06-19 18:59:23
 */
 
 html, body {
@@ -16,7 +16,7 @@ html, body {
     float: left;
     background-color: #696969;
 } 
-#comments_viewer {
+#annotation_update_div {
     float: left;
     border-style: solid;
     border-width: 1px;

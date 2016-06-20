@@ -48,7 +48,7 @@ $(document).ready(function() {
             url: "",
             data: {
                 csrfmiddlewaretoken: "{{ csrf_token }}",
-                operation: "like",
+                operation: "like_comment",
                 comment_id: $this_button.val(),
             },
             success: function () {

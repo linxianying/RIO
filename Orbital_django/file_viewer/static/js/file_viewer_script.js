@@ -83,16 +83,17 @@ function startListeningSelectionBoxCreation() {
         
         $("body").on("mouseup", function(e){
             if ($(e.target).hasClass("PageImg") || $(e.target).hasClass("PageCanvas") || $(e.target).hasClass("Annotation")) {
-                var page_height = page.attr("height");
-                var page_width = page.attr("width");
-                var top_percent = new_annotation.css("top") / page_height;
-                var left_percent = new_annotation.css("left") / page_width;
-                var height_percent = new_annotation.css("height") / page_height;
-                var width_percent = new_annotation.css("width") / page_width;
+                var page_height = page.height();
+                var page_width = page.width();
+                var top_percent = parseFloat(new_annotation.css("top")) / page_height;
+                var left_percent = parseFloat(new_annotation.css("left")) / page_width;
+                var height_percent = parseFloat(new_annotation.css("height")) / page_height;
+                var width_percent = parseFloat(new_annotation.css("width")) / page_width;
 
                 new_annotation.draggable({ containment: "parent" }).resizable({ containment: "parent" });
                 
                 // show post-annotation window
+                // "annotationWindow" is a number (start from 1), which is the index of this annotatation window
                 var annotationWindow = layer.open({
                     type: 1,
                     title: "Post Annotation",
@@ -100,18 +101,51 @@ function startListeningSelectionBoxCreation() {
                     shade: false,
                     maxmin: true, //开启最大化最小化按钮
                     area: ['380px', '280px'],
-                    content:    '<form id="comment_form">\
-                                    <textarea name="comment_content" class="form-control" rows="8" style="resize: vertical"></textarea>\
+                    content:    '<form id="annotation_form">\
+                                    <textarea name="annotation_content" class="form-control" rows="8" style="resize: vertical"></textarea>\
                                     <!--i use ajax to submit instead of using submit button-->\
-                                    <button id="post_comment_button" type="button" class="btn btn-info" name="document_id" value="{{ document.id }}"\ style="margin-top: 8px; float: right;">post annotation</button>\
+                                    <button id="post_annotation_button" type="button" class="btn btn-info" name="document_id" value="{{ document.id }}"\ style="margin-top: 8px; float: right;">post annotation</button>\
                                 </form>',
                     cancel: function() { //窗口被关闭的回调函数：当窗口被关闭，annotation选定框也一并删除
                         new_annotation.remove();
                     }
+                }); 
+
+                // annotationWindowJqueryObject will return the jquery object of the annotation window
+                // this is to deal with the case when the user create more than one annotation windows.
+                var annotationWindowJqueryObject = $("div.layui-layer[times=" + annotationWindow + "]");
+                annotationWindowJqueryObject.find("#post_annotation_button").on("click", function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "",
+                        data: {
+                            csrfmiddlewaretoken: getCookie('csrftoken'),
+                            operation: "annotate",
+                            annotation_content: annotationWindowJqueryObject. find("textarea[name='annotation_content']").val(),
+                            page_id: page.attr("id"),
+                            top_percent: top_percent,
+                            left_percent: left_percent,
+                            height_percent: height_percent,
+                            width_percent: width_percent,
+                            frame_color: annotationColor,
+                            document_id: $("button[name='document_id']").val(),
+                        },
+                        success: function (data) {
+                            // after uploading the annotation, 选择框将不再可以调整大小和拖动
+                            new_annotation.draggable("destroy").resizable("destroy");
+                            $("#annotation_update_div").html(data);
+                            markdown();
+                            // after uploading the annotation, close the window
+                            layer.close(annotationWindow);
+                        },
+                    })
+                    // 在ajax上传的过程中，禁用上传annotation的按钮防止用户在ajax上传过程中（需要一小段时间）又重复点击了post_annotation_button
+                    annotationWindowJqueryObject.find("#post_annotation_button").attr("disabled", true);
                 });
                 
                 $(".PageImg, .PageCanvas, .Annotation").off("mousemove");
                 $("body").off("mouseup");
+                annotationWindowJqueryObject.find("#post_annotation_button").attr("disabled", false);
             }
             // if mouse is released outside of PageImg or PageCanvas, it is invalid
             else {
@@ -228,9 +262,9 @@ $(document).ready(function() {
         //设置fileViewer的高度和宽度
         fileViewer.css("height", wrapper.height() + "px");
         fileViewer.css("width", parseInt(wrapper.css("width")) * 0.6 + "px"); //jquery的css方法获得的是字符串，用js的parseInt获取数值
-        //设置comments_viewer的高度和宽度
-        $("#comments_viewer").css("height", wrapper.height() * 0.8 + "px");
-        $("#comments_viewer").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
+        //设置annotation_update_div的高度和宽度
+        $("#annotation_update_div").css("height", wrapper.height() * 0.8 + "px");
+        $("#annotation_update_div").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
         //设置文档的大小
         $(".PageImg").css("width", fileViewer.width() - 24 + "px");
         $(".PageDiv").each(function() {
@@ -254,8 +288,8 @@ $(document).ready(function() {
         wrapper.css("height", document.body.clientHeight - 24 + "px");
         fileViewer.css("height", wrapper.height() + "px");
         fileViewer.css("width", wrapper.width() * 0.6 + "px");
-        $("#comments_viewer").css("height", wrapper.height() * 0.8 + "px");
-        $("#comments_viewer").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
+        $("#annotation_update_div").css("height", wrapper.height() * 0.8 + "px");
+        $("#annotation_update_div").css("width", wrapper.width() - fileViewer.width() - 2 + "px");
         //设置文档的大小
         var originalWidth = parseFloat($(".PageImg").css("width"));
 

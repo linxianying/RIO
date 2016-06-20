@@ -40,16 +40,8 @@
                 {% endfor %}
             </div>
 
-            <div id="comments_viewer">
-                <h1>wocao</h1>
-                <h1>wocao</h1>
-                <h1>wocao</h1>
-                <h1>wocao</h1>
-                <h1>wocao</h1>
-                <h1>wocao</h1>
-                <h1>wocao</h1>
-                <h1>wocao</h1>
-                <h1>wocao</h1>
+            <div id="annotation_update_div">
+                {% include "file_viewer/annotation_viewer_subpage.html" %}
             </div>
 
             <div class="modal fade" id="comment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -87,10 +79,18 @@
     </body>
     <script>
         numPages = parseInt("{{ numPages }}");
-        var pageDivs = $(".PageDiv");
+        
         // set id for each PageDiv
+        var pageDivs = $(".PageDiv");
         for (var i = 1; i <= numPages; i++)
             $(pageDivs[i - 1]).attr("id", "page_div_" + i);
+                var pageDivs = $(".PageDiv");
+        
+        // set id for each PageImg
+        var pageImgs = $(".PageImg");
+        for (var i = 1; i <= numPages; i++)
+            $(pageImgs[i - 1]).attr("id", "page_img_" + i);
+
         prepareScrollPageIntoView();
         startListeningSelectionBoxCreation();
     </script>

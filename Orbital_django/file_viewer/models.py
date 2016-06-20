@@ -77,3 +77,20 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return self.content
+
+
+class Annotation(models.Model):
+    post_time = models.DateTimeField(auto_now=False, auto_now_add=True)
+    annotator = models.ForeignKey(home_models.User)
+    document_this_annotation_belongs = models.ForeignKey(Document)
+    content = models.TextField()
+    num_like = models.IntegerField(default=0)
+    page_id = models.CharField(max_length=18)
+    height_percent = models.FloatField()
+    width_percent = models.FloatField()
+    top_percent = models.FloatField()
+    left_percent = models.FloatField()
+    frame_color = models.CharField(max_length=18)
+
+    def __unicode__(self):
+        return self.content
