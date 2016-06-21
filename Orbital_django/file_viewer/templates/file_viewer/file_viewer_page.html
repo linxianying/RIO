@@ -93,5 +93,34 @@
 
         prepareScrollPageIntoView();
         startListeningSelectionBoxCreation();
+
+        {% for annotation in annotations %}
+            var new_annotation = $("<div class='Annotation' top_percent='{{ annotation.top_percent }}' left_percent='{{ annotation.left_percent }}' height_percent='{{ annotation.height_percent }}' width_percent='{{ annotation.width_percent }}'></div>");
+            var page_id = "{{ annotation.page_id }}";
+            var frame_color = "{{ annotation.frame_color }}"
+            var page = $("#" + page_id);
+            var pageDiv = page.parents(".page_div, .PageDiv");
+            pageDiv.append(new_annotation);
+            new_annotation.css({
+                "background": frame_color,
+                "position": "absolute",
+            });
+        {% endfor %}
+        $(".Annotation").each(function() {
+            var annotation = $(this);
+            var top_percent = parseFloat(annotation.attr("top_percent"));
+            var left_percent = parseFloat(annotation.attr("left_percent"));
+            var height_percent = parseFloat(annotation.attr("height_percent"));
+            var width_percent = parseFloat(annotation.attr("width_percent"));
+            var page = annotation.parent(".PageDiv").find(".PageImg");
+            imgLoad(page[0], function() {
+                annotation.css({
+                    "width": page.width() * width_percent + "px",
+                    "height": page.height() * height_percent + "px",
+                    "left": page.width() * left_percent + "px",
+                    "top": page.height() * top_percent + "px",
+                });
+            });
+        });
     </script>
 </html>

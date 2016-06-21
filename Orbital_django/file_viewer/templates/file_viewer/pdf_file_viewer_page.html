@@ -77,7 +77,6 @@
             </div>
         </div>
     </body>
-
 <script>
 var pdfDoc;
 var scale = 1;
@@ -87,7 +86,7 @@ var rendering = false;
 var scaleFactor = 1.08;
 var sampleWidth;
 var sampleHeight;
-    
+
 $("#buttonForLarger").on('click', function () {
     scale *= scaleFactor;
     
@@ -229,7 +228,7 @@ function prepareAndRenderAll(scale) {
             $(".page_div").css("width", (sampleWidth + 6) + "px")
 
             startListeningSelectionBoxCreation();
-
+            drawAllExistingAnnotationFrame();
         });
 
         taskList.push([Math.min(numPages, 1), "PENDING", null]);
@@ -294,6 +293,37 @@ function startListeningScroll() {
                 renderTaskList(taskList, finishList, scale);
         }
     });
+}
+
+function drawAllExistingAnnotationFrame() {
+    {% for annotation in annotations %}
+        var new_annotation = $("<div class='Annotation'></div>");
+        var top_percent = parseFloat("{{ annotation.top_percent }}");
+        var left_percent = parseFloat("{{ annotation.left_percent }}");
+        var height_percent = parseFloat("{{ annotation.height_percent }}");
+        var width_percent = parseFloat("{{ annotation.width_percent }}");
+        var page_id = "{{ annotation.page_id }}";
+        var frame_color = "{{ annotation.frame_color }}"
+        console.log(top_percent)
+        console.log(left_percent)
+        console.log(height_percent)
+        console.log(width_percent)
+        console.log(page_id)
+        console.log(frame_color)
+        var page = $("#" + page_id);
+        var pageDiv = page.parents(".page_div, .PageDiv");
+        console.log(page[0])
+        new_annotation.css({
+            "background": frame_color,
+            "position": "absolute",
+            "width": pageDiv.width() * width_percent + "px",
+            "height": pageDiv.height() * height_percent + "px",
+            "left": pageDiv.width() * left_percent + "px",
+            "top": pageDiv.height() * top_percent + "px",
+        });
+        console.log(page.parents(".page_div, .PageDiv")[0])
+        pageDiv.append(new_annotation);
+    {% endfor %}
 }
 </script>
 
