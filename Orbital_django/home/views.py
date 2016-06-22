@@ -24,7 +24,7 @@ def display_sign_up_page(request):
 
 
 def handle_log_in(request):
-    input_email_address = request.POST['email_address']
+    input_email_address = request.POST['email_address']   
     input_password = request.POST['password']
     user = authenticate(input_username=input_email_address, input_password=input_password)
     if user is not None:

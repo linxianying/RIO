@@ -21,11 +21,9 @@
     nav label {
         color: white;
     }
-
     img{
         width:100%;
     }
-
     h1,h2{
         color:black;
         text-align: center;
@@ -54,7 +52,6 @@
         color: #008CB0; 
         border: 2px solid #008CBA;
     }
-
     .button2:hover {
         background-color: #008CBA;
         color: white;
@@ -71,21 +68,19 @@
         opacity: 0;
         transition: all 0.8s
     }
-
     .button:active:after {
         padding: 0;
         margin: 0;
         opacity: 1;
         transition: 0s
     }
-
     </style>
 </head>
 
 <body>
     <div class="container">
         <nav class="navbar row">
-            <form action="/handle_search" method="get">
+            <form action="/handle_search" mtehod="get">
                 <input name="search_key" type="text" class="form-control input-sm" required="required">
                 <button type="submit" class="btn btn-sm btn-default">search</button>
             </form>
@@ -104,7 +99,7 @@
             <h2>thoughts with the world.</h2>
             <h2>Do not have an account yet?</h2>
             <div class = "col-md-offset-5">
-                <a href="http://127.0.0.1:8000/sign_up"><button class="button2">Sign Up Now!</button></a>
+                <a href="/sign_up"><button class="button2">Sign Up Now!</button></a>
             </div>
             <img src="http://2.bp.blogspot.com/-ML0xC1DZTxI/VjdZuWXsIsI/AAAAAAAAIlU/WhbrTec6Y08/s1600/OPenBook.jpg">
         </div>

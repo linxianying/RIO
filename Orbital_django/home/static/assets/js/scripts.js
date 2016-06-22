@@ -34,11 +34,11 @@ jQuery(document).ready(function() {
     });
 
     // first step's next step
-    $('.registration-form .btn-next').click(function() {
+    $('.registration-form .btn-next').on("click", function() {
     	var parentRegistrationForm = $(this).parents('.registration-form');
     	var nextStep = false;
     	
-        $(this).parents(".registration-form").find("iframe").load(function() {
+        parentRegistrationForm.find("iframe").on("load", function() {
             nextStep = true;
     
         	parentRegistrationForm.find('input[type="text"], input[type="password"], input[type="email"]').each(function() {
@@ -59,7 +59,6 @@ jQuery(document).ready(function() {
     	    	});
         	}
     	});
-
     });
 
     // second step
@@ -93,7 +92,7 @@ jQuery(document).ready(function() {
     });
 
     // when leave sign_up_page, send information to the server to delete the information for this signing up
-    $(window).unload(function(){
+    $(window).on("unload", function(){
         $.ajax({
             type: "POST",
             url: "/handle_sign_up",
@@ -106,7 +105,7 @@ jQuery(document).ready(function() {
     });
 
     // clear
-    $('.registration-form .btn-clear').click(function() {
+    $('.registration-form .btn-clear').on("click", function() {
         $(this).parents('.form-bottom').find('input').val("");
     });
 
