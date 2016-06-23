@@ -37,8 +37,23 @@ jQuery(document).ready(function() {
     $('.registration-form .btn-next').on("click", function() {
     	var parentRegistrationForm = $(this).parents('.registration-form');
     	var nextStep = false;
-    	
+
+        var loadingLayer = layer.load(0, {shade: 0.18}); //0代表加载的风格，支持0-2
+        var messageLayer = layer.msg('we are sending the verification code to your email address, this will take a while.', {
+            offset: 1.8,
+            title: "message",
+            icon: 6,
+            skin: 'layui-layer-molv', 
+            shift: 1,
+            area: ['auto', 'auto'],
+            time: 0,
+        })
+        
         parentRegistrationForm.find("iframe").on("load", function() {
+            layer.close(loadingLayer);
+            layer.close(messageLayer);
+            layer.msg('email successfullly sent, please check', {icon: 1, offset: 1.8, time: 3800, shift: 4});
+            
             nextStep = true;
     
         	parentRegistrationForm.find('input[type="text"], input[type="password"], input[type="email"]').each(function() {

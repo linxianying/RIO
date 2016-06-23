@@ -185,7 +185,7 @@ function scrollPageIntoView(pageIndex) {
     // animatedly scroll, 240 means the scrolling process take 240ms long
     fileViewer.animate({scrollTop: parseInt(down)}, 240);
 }
-
+  
 function prepareScrollPageIntoView() {
     var input = $("#scroll_page_into_view_div").children("input");
     var button = $("#scroll_page_into_view_div").children("button");

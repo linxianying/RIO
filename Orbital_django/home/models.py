@@ -1,9 +1,44 @@
 from __future__ import unicode_literals
 from django.db import models
-from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.dispatch import receiver
+from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 import os
 import shutil
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def _create_user(self, nickname, email_address, password, **extra_fields):
+        """
+        Creates and saves a User with the given nickname, email and password.
+        """
+        if not nickname:
+            raise ValueError('The given nickname must be set')
+        email_address = self.normalize_email(email_address)
+        user = self.model(nickname=nickname, email_address=email_address, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, nickname, email_address=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(nickname, email_address, password, **extra_fields)
+
+    def create_superuser(self, nickname, email_address, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(nickname, email_address, password, **extra_fields)
 
 
 def upload_to(instance, filename):
@@ -13,16 +48,14 @@ def upload_to(instance, filename):
     return '{0}/{1}/{2}.{3}'.format("portrait", instance.email_address, "portrait", extension)
 
 
-class User(AbstractBaseUser):
-    nickname = models.CharField(max_length=254)
+class User(AbstractBaseUser, PermissionsMixin):
+    nickname = models.CharField(max_length=254, unique=True)
 
-    email_address = models.EmailField(max_length=254)
+    email_address = models.EmailField(max_length=254, unique=True)
 
     # field "password" inherited from AbstractBaseUser
 
     level = models.IntegerField(default=0)
-
-    is_member = models.BooleanField(default=False)
 
     portrait = models.ImageField(upload_to=upload_to, blank=True, null=True)
 
@@ -33,26 +66,31 @@ class User(AbstractBaseUser):
         else:
             return "media/portrait/default_portrait.png"
 
-    # the following fields and methods (*) are from AbstractBaseUser
+    USERNAME_FIELD = "email_address"
 
-    # get_username will return this field
-    # also, this is the unique identification of a user
-    USERNAME_FIELD = "email_address"  # (*)
+    REQUIRED_FIELDS = ["nickname"]
 
-    REQUIRED_FIELDS = ["nickname", "email_address", "password"]  # (*)
+    is_active = models.BooleanField(
+        default=True,
+    )
 
-    # temporarily just make it True,
-    # in the future may use how long this user has not logged in
-    # to decide whether this account is active or not
-    is_active = True  # (*)
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=True,
+        help_text=_('Designates whether the user can log into this admin site.'),
+    )
 
-    def get_full_name(self):  # (*)
-        return self.nickname + "<" + self.email_address + ">" + "level:" + str(self.level) + " member:" + str(self.is_member)
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
-    def get_short_name(self):  # (*)
+    objects = UserManager()
+
+    def get_full_name(self):
+        return self.nickname + "<" + self.email_address + ">" + "level:" + str(self.level) + " superuser:" + str(self.is_superuser) + " staff:" + str(self.is_staff)
+
+    def get_short_name(self):
         return self.nickname
 
-    def set_username(self, nickname):
+    def set_nickname(self, nickname):
         self.nickname = nickname
 
     def set_email_address(self, email_address):
@@ -62,20 +100,6 @@ class User(AbstractBaseUser):
 
     def __unicode__(self):
         return self.get_full_name()
-
-    # the following are required if i want to use this User model to log into admin site
-    
-    def is_superuser(self):
-        return True
-
-    def is_staff(self):
-        return True
-
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
 
 
 @receiver(models.signals.pre_delete, sender=User)
@@ -89,4 +113,3 @@ def delete_local_portrait(sender, instance, **kwargs):
 
         if os.path.isdir(img_local_dirname):
             shutil.rmtree(img_local_dirname)
-

@@ -1,14 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-
-# for sending verification using e-mail
-from django.core.mail import EmailMessage
-
-# for log in verification
-from django.contrib.auth import authenticate, login
-
+from django.core.mail import EmailMessage  # for sending verification using e-mail
+from django.contrib.auth import authenticate, login  # for log in verification
 from django.shortcuts import redirect
-
 import models
 import random
 
@@ -26,7 +20,7 @@ def display_sign_up_page(request):
 def handle_log_in(request):
     input_email_address = request.POST['email_address']   
     input_password = request.POST['password']
-    user = authenticate(input_username=input_email_address, input_password=input_password)
+    user = authenticate(email_address=input_email_address, password=input_password)
     if user is not None:
         if user.is_active:
             login(request, user)
@@ -52,7 +46,7 @@ def handle_sign_up(request):
 
     if post_result_dic.__contains__("username"):
         new_user = models.User()
-        new_user.set_username(post_result_dic["username"])
+        new_user.set_nickname(post_result_dic["username"])
     
         if post_result_dic.__contains__("email_address"):
             new_user.set_email_address(post_result_dic["email_address"])

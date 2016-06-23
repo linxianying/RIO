@@ -1,14 +1,13 @@
-from django.shortcuts import render
-from django.contrib.auth import logout, get_user
-from django.shortcuts import redirect
-from file_viewer import models
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-import re
-import os
-import Orbital_django.settings as settings
-from hashlib import md5
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout, get_user
+import Orbital_django.settings as settings
+from file_viewer import models
+import re
+import os
+from hashlib import md5
 
 
 def handle_log_out(request):
