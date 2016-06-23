@@ -17,10 +17,28 @@ def display_file_viewer_page(request):
             comment.save()
             return HttpResponse()
 
-        if request.POST["operation"] == "like_annotation":
+        elif request.POST["operation"] == "like_annotation":
             annotation = models.Annotation.objects.get(id=int(request.POST["annotation_id"]))
             annotation.num_like += 1
             annotation.save()
+            return HttpResponse()
+
+        elif request.POST["operation"] == "collect":
+            user = get_user(request)
+            document = models.Document.objects.get(id=int(request.POST["document_id"]))
+            document.collectors.add(user)
+            user.collected_document_set.add(document)
+            user.save()
+            document.save()
+            return HttpResponse()
+
+        elif request.POST["operation"] == "uncollect":
+            user = get_user(request)
+            document = models.Document.objects.get(id=int(request.POST["document_id"]))
+            document.collectors.remove(user)
+            user.collected_document_set.remove(document)
+            user.save()
+            document.save()
             return HttpResponse()
 
         elif request.POST["operation"] == "refresh":
@@ -86,6 +104,11 @@ def display_file_viewer_page(request):
 
         pages = []
 
+        user = get_user(request)
+        collected = False
+        if document in user.collected_document_set.all():
+            collected = True
+
         if extension == "zip":
             zip_file = zipfile.ZipFile(file_position, "r")
             zip_alphabatical_list = sorted(zip_file.namelist())
@@ -144,6 +167,7 @@ def display_file_viewer_page(request):
                 "file_url": file_url[1:],
                 "comments": document.comment_set.order_by("-post_time"),
                 "annotations": document.annotation_set.order_by("-post_time"),
+                "collected": collected
             }
             return render(request, "file_viewer/pdf_file_viewer_page.html", context)
 
@@ -153,5 +177,6 @@ def display_file_viewer_page(request):
             "pages": pages,
             "comments": document.comment_set.order_by("-post_time"),
             "annotations": document.annotation_set.order_by("-post_time"),
+            "collected": collected,
         }
         return render(request, "file_viewer/file_viewer_page.html", context)

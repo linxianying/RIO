@@ -90,7 +90,7 @@
 <ol>
     {% for document in result_documents %}
     <li>
-        <div class = "col-md-11" id = "list-files">
+        <div id = "list-files">
             <tbody>
                 <tr>
                     <form method="get" action="/file_viewer/" style="display: inline-block; font-family: arial; color: white">
@@ -102,17 +102,11 @@
                             <button type="submit" name="document_id" value={{ document.id }} class="button2">open</button>
                         </td>
                     </form>
-
-                    <td>
-                        <form method="post" action="/user_dashboard/handle_delete" style="display: inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" name="document_id" class="button2" value={{ document.id }}>delete</button>
-                        </form>
-                    </td>
                 </tr>
             </tbody>
         </div>
     </li>
+    <hr>
     {% endfor %}
 </ol>
 </body>

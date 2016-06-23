@@ -2,7 +2,7 @@
 * @Author: Roy
 * @Date:   2016-06-05 09:09:27
 * @Last Modified by:   Roy
-* @Last Modified time: 2016-06-19 18:59:23
+* @Last Modified time: 2016-06-23 13:58:37
 */
 
 html, body {
@@ -27,6 +27,7 @@ html, body {
 #annotation_color_buttons_div, 
 #show_annotation_frame_button, 
 #hide_annotation_frame_button, 
+#collect_button,
 #scroll_page_into_view_div {
     margin-right: 18px;
     float: right;

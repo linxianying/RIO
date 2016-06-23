@@ -38,14 +38,18 @@ def handle_file_upload(request):
 
 def handle_delete(request):
     document = models.Document.objects.get(id=int(request.POST["document_id"]))
-    document.delete()
+    if document.owner == get_user(request):  # only the owner can delete the file. the collector cannot
+        document.delete()
     return redirect("user_dashboard")
 
 
 @login_required(login_url='/')
 def display_user_dashboard(request):
     current_user = get_user(request)
-    return render(request, "user_dashboard/user_dashboard_page.html", {"current_user": current_user})
+    context = {
+        "current_user": current_user,
+    }
+    return render(request, "user_dashboard/user_dashboard_page.html", context)
 
 
 def change_portrait(request):

@@ -43,4 +43,40 @@
         <button type="button" class="btn btn-lg" style="background-color: rgba(127, 255, 0, 0.18)" id="green_color"></button> 
         <button type="button" class="btn btn-lg" style="background-color: rgba(255, 0, 0, 0.18)" id="red_color"></button>
     </div>
+    {% if collected %}
+    <button type="button" id="collect_button"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></button>
+    {% else %}  
+    <button type="button" id="collect_button"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span></button>
+    {% endif %}
 </div>
+<script>
+    $("#collect_button").on("click", function(){
+        var span = $(this).find("span");
+        if (span.hasClass("glyphicon-star-empty")) {
+            span.removeClass("glyphicon-star-empty"); 
+            span.addClass("glyphicon-star");
+            $.ajax({
+                type: "POST",
+                url: "",
+                data: {
+                    csrfmiddlewaretoken: getCookie('csrftoken'),
+                    operation: "collect",
+                    document_id: $("button[name='document_id']").val(),
+                },
+            })
+        }
+        else if (span.hasClass("glyphicon-star")) {
+           span.removeClass("glyphicon-star-empty");
+           span.addClass("glyphicon-star-empty");
+            $.ajax({
+                type: "POST",
+                url: "",
+                data: {
+                    csrfmiddlewaretoken: getCookie('csrftoken'),
+                    operation: "uncollect",
+                    document_id: $("button[name='document_id']").val(),
+                },
+            })
+        }
+    })
+</script>

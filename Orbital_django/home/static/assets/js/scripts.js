@@ -11,7 +11,6 @@ jQuery(document).ready(function() {
     $('#top-navbar-1').on('hidden.bs.collapse', function(){
     	$.backstretch("resize");
     });
-    
 
     // Form
     $('.registration-form:first-child fieldset').fadeIn('slow');
@@ -19,7 +18,7 @@ jQuery(document).ready(function() {
     $('.registration-form input[type="text"], .registration-form input[type="password"], .registration-form input[type="email"]').on('focus', function() {
     	$(this).removeClass('input-error');
     });
-
+    
     // submit
     $('.registration-form').on('submit', function(e) {
         $(this).find('input[type="text"], input[type="password"], input[type="email"]').each(function() {
@@ -40,7 +39,6 @@ jQuery(document).ready(function() {
 
         var loadingLayer = layer.load(0, {shade: 0.18}); //0代表加载的风格，支持0-2
         var messageLayer = layer.msg('we are sending the verification code to your email address, this will take a while.', {
-            offset: 1.8,
             title: "message",
             icon: 6,
             skin: 'layui-layer-molv', 
