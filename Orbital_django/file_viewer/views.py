@@ -86,7 +86,8 @@ def display_file_viewer_page(request):
 
             context = {
                 "document": document,
-                "annotations": document.annotation_set.order_by("-post_time"),
+                "annotations": document.annotation_set.order_by("page_id"),
+                "new_annotation_id": annotation.id,
             }
 
             return render(request, "file_viewer/annotation_viewer_subpage.html", context)
@@ -109,6 +110,9 @@ def display_file_viewer_page(request):
         if document in user.collected_document_set.all():
             collected = True
 
+        document.num_visit += 1
+        document.save()
+        
         if extension == "zip":
             zip_file = zipfile.ZipFile(file_position, "r")
             zip_alphabatical_list = sorted(zip_file.namelist())
@@ -166,7 +170,7 @@ def display_file_viewer_page(request):
                 "document": document,
                 "file_url": file_url[1:],
                 "comments": document.comment_set.order_by("-post_time"),
-                "annotations": document.annotation_set.order_by("-post_time"),
+                "annotations": document.annotation_set.order_by("page_id"),
                 "collected": collected
             }
             return render(request, "file_viewer/pdf_file_viewer_page.html", context)
@@ -176,7 +180,7 @@ def display_file_viewer_page(request):
             "document": document,
             "pages": pages,
             "comments": document.comment_set.order_by("-post_time"),
-            "annotations": document.annotation_set.order_by("-post_time"),
+            "annotations": document.annotation_set.order_by("page_id"),
             "collected": collected,
         }
         return render(request, "file_viewer/file_viewer_page.html", context)

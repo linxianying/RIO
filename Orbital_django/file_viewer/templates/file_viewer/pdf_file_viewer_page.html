@@ -304,15 +304,8 @@ function drawAllExistingAnnotationFrame() {
         var width_percent = parseFloat("{{ annotation.width_percent }}");
         var page_id = "{{ annotation.page_id }}";
         var frame_color = "{{ annotation.frame_color }}"
-        console.log(top_percent)
-        console.log(left_percent)
-        console.log(height_percent)
-        console.log(width_percent)
-        console.log(page_id)
-        console.log(frame_color)
         var page = $("#" + page_id);
         var pageDiv = page.parents(".page_div, .PageDiv");
-        console.log(page[0])
         new_annotation.css({
             "background": frame_color,
             "position": "absolute",
@@ -321,7 +314,7 @@ function drawAllExistingAnnotationFrame() {
             "left": pageDiv.width() * left_percent + "px",
             "top": pageDiv.height() * top_percent + "px",
         });
-        console.log(page.parents(".page_div, .PageDiv")[0])
+        new_annotation.attr("annotation_id", '{{ annotation.id }}')
         pageDiv.append(new_annotation);
     {% endfor %}
 }

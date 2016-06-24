@@ -1,4 +1,5 @@
 var numPages = 0;
+var new_annotation_id;
 
 function getCookie(name) {
     var cookieValue = null;
@@ -44,8 +45,12 @@ function startListeningSelectionBoxCreation() {
         annotationColor = $(this).css("background-color");
     });
 
-    $(".PageImg, .PageCanvas").on("mousedown", function(e) {
-        var page = $(e.target);
+    // 可以在已经完成的annotation selection frame上新建一个selection frame
+    $(".PageDiv, .page_div").on("mousedown", function(e) {
+        // 如果是新建尚未上传的annotation，则不能在其selection frame上新建一个selection frame，因为点击这个事件要用来给这个尚未上传的annotation的frame做drag或者resize
+        if ($(e.target).hasClass('ui-draggable'))
+            return ;
+        var page = $(this).find(".PageImg, .PageCanvas");
         var mouse_absolut_x = e.pageX;
         var mouse_absolut_y = e.pageY;
         var page_top_left_x = page.offset().left;
@@ -134,6 +139,9 @@ function startListeningSelectionBoxCreation() {
                             // after uploading the annotation, 选择框将不再可以调整大小和拖动
                             new_annotation.draggable("destroy").resizable("destroy");
                             $("#annotation_update_div").html(data);
+
+                            new_annotation.attr("annotation_id", new_annotation_id)
+
                             markdown();
                             // after uploading the annotation, close the window
                             layer.close(annotationWindow);
@@ -145,6 +153,7 @@ function startListeningSelectionBoxCreation() {
                 
                 $(".PageImg, .PageCanvas, .Annotation").off("mousemove");
                 $("body").off("mouseup");
+                // 重新启用上传annotation的按钮
                 annotationWindowJqueryObject.find("#post_annotation_button").attr("disabled", false);
             }
             // if mouse is released outside of PageImg or PageCanvas, it is invalid
@@ -167,7 +176,6 @@ function resizeAnnotations(scaleFactor) {
         $(this).css("left", parseFloat($(this).css("left")) * scaleFactor + "px");
         $(this).css("width", parseFloat($(this).css("width")) * scaleFactor + "px");
         $(this).css("height", parseFloat($(this).css("height")) * scaleFactor + "px");
-        $(this).css("border_radius", parseFloat($(this).css("border_radius")) * scaleFactor + "px");
     });
 }
 
@@ -176,9 +184,7 @@ function resizeAnnotations(scaleFactor) {
  * @param {int} pageIndex - the index of the page to be scroll to 
  * @return {undefined}
  */
-function scrollPageIntoView(pageIndex) {
-    var pageDivId = "page_div_" + pageIndex;
-    var pageDiv = $("#" + pageDivId);
+function scrollPageDivIntoView(pageDiv) {
     var fileViewer = $("#file_viewer");
     // "down" is the number of pixels to scroll the visible part down from the top of fileViewer
     var down = pageDiv.offset().top - fileViewer.offset().top + fileViewer.scrollTop();
@@ -193,7 +199,9 @@ function prepareScrollPageIntoView() {
     input.attr("max", numPages.toString());
     button.on("click", function() {
         var pageIndex = input.val();
-        scrollPageIntoView(pageIndex);
+        var pageDivId = "page_div_" + pageIndex;
+        var pageDiv = $("#" + pageDivId);
+        scrollPageDivIntoView(pageDiv);
     });
 }
 

@@ -55,6 +55,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # field "password" inherited from AbstractBaseUser
 
+    following_users = models.ManyToManyField('self', related_name="follower_set")
+
     level = models.IntegerField(default=0)
 
     portrait = models.ImageField(upload_to=upload_to, blank=True, null=True)

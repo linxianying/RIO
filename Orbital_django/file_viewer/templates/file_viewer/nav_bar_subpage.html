@@ -48,6 +48,7 @@
     {% else %}  
     <button type="button" id="collect_button"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span></button>
     {% endif %}
+    <b id="num_visit">{{ document.num_visit }}</b>
 </div>
 <script>
     $("#collect_button").on("click", function(){

@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
-from home import models as home_models
+from home.models import User
 from django.dispatch import receiver
 import os
 import shutil
@@ -54,9 +54,10 @@ def delete_local_file(sender, instance, **kwargs):
 
 class Document(models.Model):
     title = models.CharField(max_length=1028)
-    owner = models.ForeignKey(home_models.User)  # many Documents to one User
-    collectors = models.ManyToManyField(home_models.User, related_name="collected_document_set")
+    owner = models.ForeignKey(User)  # many Documents to one User
+    collectors = models.ManyToManyField(User, related_name="collected_document_set")
     unique_file = models.ForeignKey(UniqueFile)  # many Documents to one UniqueFile
+    num_visit = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.title
@@ -71,7 +72,7 @@ def may_delete_unique_file(sender, instance, **kwargs):
 
 class Comment(models.Model):
     post_time = models.DateTimeField(auto_now=False, auto_now_add=True)
-    commenter = models.ForeignKey(home_models.User)  # many Comments to one User
+    commenter = models.ForeignKey(User)  # many Comments to one User
     document_this_comment_belongs = models.ForeignKey(Document)  # many Commments to one Document
     content = models.TextField()
     num_like = models.IntegerField(default=0)
@@ -82,7 +83,7 @@ class Comment(models.Model):
 
 class Annotation(models.Model):
     post_time = models.DateTimeField(auto_now=False, auto_now_add=True)
-    annotator = models.ForeignKey(home_models.User)
+    annotator = models.ForeignKey(User)
     document_this_annotation_belongs = models.ForeignKey(Document)
     content = models.TextField()
     num_like = models.IntegerField(default=0)

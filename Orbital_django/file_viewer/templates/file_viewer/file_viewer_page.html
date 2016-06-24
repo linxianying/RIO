@@ -105,6 +105,7 @@
                 "background": frame_color,
                 "position": "absolute",
             });
+            new_annotation.attr("annotation_id", '{{ annotation.id }}');
         {% endfor %}
         $(".Annotation").each(function() {
             var annotation = $(this);
