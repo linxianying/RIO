@@ -135,7 +135,7 @@
     </div>
 
     <div class="row">
-        <div class = "col-md-6">
+        <div class="col-md-6">
             <h3>My Documents</h3>
             <ol>
                 {% for document in current_user.document_set.all %}
@@ -168,7 +168,7 @@
             </ol>
         </div>
 
-        <div class = "col-md-6">
+        <div class="col-md-6">
             <h3>My collected Documents</h3>
             <ol>
                 {% for document in current_user.collected_document_set.all %}
@@ -194,10 +194,30 @@
             </ol>
         </div>
     </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-6" style="text-align: center;">
+            <h2>Users you follow</h2><br>
+            {% for following_user in current_user.following_users.all %}
+            <form action="/user_dashboard/handle_unfollow_user" method="post">
+                {% csrf_token %}
+                <img class="img-thumbnail" src='{{ following_user.portrait_url }}' height="80" width="80">
+                <button id='unfollow_button' type="submit" name="user_id" value='{{ following_user.id }}' class="button2" style="margin-left: 18px">unfollow</button>
+            </form>
+            {% endfor %}
+        </div>
+        <div class="col-md-6" style="text-align: center;">
+            <h2>Your followers</h2><br>
+            {% for follower in current_user.follower_set.all %}
+                <img class="img-thumbnail" src="{{ follower.portrait_url }}" height="80" width="80"><br>
+            {% endfor %}
+        </div>
+    </div>
+    <hr>
 </div>
 </body>
 <script>
-    $("#file_upload_form, #file_delete_form").on("submit", function() {
+    $("#file_upload_form, #file_delete_form, #unfollow_button").on("submit", function() {
         var index = layer.load(0, {shade: 0.18}); //0代表加载的风格，支持0-2
     })
 </script>

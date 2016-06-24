@@ -87,6 +87,7 @@
 </head>
 
 <body>
+<h1 style="text-align: center;">documents</h1>
 <ol>
     {% for document in result_documents %}
     <li>
@@ -100,6 +101,30 @@
                         </td>
                         <td>
                             <button type="submit" name="document_id" value={{ document.id }} class="button2">open</button>
+                        </td>
+                    </form>
+                </tr>
+            </tbody>
+        </div>
+    </li>
+    <hr>
+    {% endfor %}
+</ol>
+
+<h1 style="text-align: center;">users</h1>
+<ol>
+    {% for user in result_users %}
+    <li>
+        <div id = "list-files">
+            <tbody>
+                <tr>
+                    <form method="post" action="/user_dashboard/handle_follow_user" style="display: inline-block; font-family: arial; color: white">
+                        {% csrf_token %}
+                        <td scope = "col">
+                            {{ user.nickname }} ({{ user.email_address }})
+                        </td>
+                        <td>
+                            <button type="submit" name="user_id" value={{ user.id }} class="button2">follow</button>
                         </td>
                     </form>
                 </tr>

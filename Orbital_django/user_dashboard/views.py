@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, get_user
 import Orbital_django.settings as settings
 from file_viewer import models
+from home.models import User
 import re
 import os
 from hashlib import md5
@@ -88,3 +89,25 @@ def change_portrait(request):
         user.save()  
 
         return HttpResponse()  # ajax will make the user go back his/her user dashboard
+
+
+def handle_follow_user(request):
+    follow_target_user_id = request.POST['user_id']
+    user = get_user(request)
+    follow_target_user = User.objects.get(id=follow_target_user_id)
+    user.following_users.add(follow_target_user)
+    follow_target_user.follower_set.add(user)
+    user.save()
+    follow_target_user.save()
+    return redirect('user_dashboard')
+
+
+def handle_unfollow_user(request):
+    follow_target_user_id = request.POST['user_id']
+    user = get_user(request)
+    follow_target_user = User.objects.get(id=follow_target_user_id)
+    user.following_users.remove(follow_target_user)
+    follow_target_user.follower_set.remove(user)
+    user.save()
+    follow_target_user.save()
+    return redirect('user_dashboard')

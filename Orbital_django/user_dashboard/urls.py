@@ -14,4 +14,8 @@ urlpatterns = [
 
     url(r'^change_portrait', views.change_portrait, name="change_portrait"),
 
+    url(r'^handle_follow_user', views.handle_follow_user, name="handle_follow_user"),
+
+    url(r'^handle_unfollow_user', views.handle_unfollow_user, name="handle_unfollow_user"),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

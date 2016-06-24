@@ -3,9 +3,10 @@ from django.http import HttpResponse
 from django.core.mail import EmailMessage  # for sending verification using e-mail
 from django.contrib.auth import authenticate, login  # for log in verification
 from django.shortcuts import redirect
+from django.db.models import Q
 import models
 import random
-
+from home.models import User
 from file_viewer.models import Document
 
 
@@ -92,7 +93,9 @@ def handle_sign_up(request):
 def handle_search(request):
     search_key = request.GET["search_key"]
     result_documents = Document.objects.filter(title__icontains=search_key)  # case-insensitive contain
+    result_users = User.objects.filter(Q(nickname__icontains=search_key) | Q(email_address__icontains=search_key))
     context = {
         "result_documents": result_documents,  
+        "result_users": result_users,
     }
     return render(request, "home/search_result_page.html", context)

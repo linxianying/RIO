@@ -6,6 +6,7 @@ class DocumentModelAdmin(admin.ModelAdmin):
     list_display = ["title", "unique_file", "owner", "id"]
     list_filter = ["title", "unique_file", "owner", "id"]
     search_fields = ["title", "unique_file", "owner", "id"]
+    filter_horizontal = ['collectors']
 
 
 class UniqueFileModelAdmin(admin.ModelAdmin):
