@@ -95,6 +95,7 @@ def handle_search(request):
     result_documents = Document.objects.filter(title__icontains=search_key)  # case-insensitive contain
     result_users = User.objects.filter(Q(nickname__icontains=search_key) | Q(email_address__icontains=search_key))
     context = {
+        "search_key": search_key,
         "result_documents": result_documents,  
         "result_users": result_users,
     }

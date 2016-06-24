@@ -22,6 +22,7 @@ html, body {
 #hide_annotation_frame_button, 
 #collect_button,
 #num_visit,
+#num_collect,
 #scroll_page_into_view_div {
     margin-right: 18px;
     float: right;

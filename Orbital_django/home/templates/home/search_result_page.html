@@ -87,7 +87,12 @@
 </head>
 
 <body>
-<h1 style="text-align: center;">documents</h1>
+<form action="/handle_search" mtehod="get" class="form-inline" align="center">
+    <input name="search_key" type="text" class="form-control input-sm" required="required">
+    <button type="submit" class="button2">search</button>
+</form>
+<h2 align="center">result for searching "{{ search_key }}"</h2>
+<h3 style="text-align: center;">documents</h3>
 <ol>
     {% for document in result_documents %}
     <li>
@@ -111,7 +116,7 @@
     {% endfor %}
 </ol>
 
-<h1 style="text-align: center;">users</h1>
+<h3 style="text-align: center;">users</h3>
 <ol>
     {% for user in result_users %}
     <li>

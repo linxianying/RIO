@@ -127,7 +127,7 @@
             <hr>
             <form id="file_upload_form" enctype="multipart/form-data" action = "/user_dashboard/handle_file_upload" method = "post">
                 {% csrf_token %}
-                <input name = "file_upload" type="file" class="form-control input-sm" required="required">
+                <input name = "file_upload" type="file" class="form-control input-sm" accept="application/pdf,application/zip,application/rar" required="required">
                 <input name = "title" type="text" class="form-control input-sm" placeholder="title" required="required">
                 <button type="submit" class="button2" style="float: right">upload</button>
             </form>
@@ -202,14 +202,17 @@
             <form action="/user_dashboard/handle_unfollow_user" method="post">
                 {% csrf_token %}
                 <img class="img-thumbnail" src='{{ following_user.portrait_url }}' height="80" width="80">
-                <button id='unfollow_button' type="submit" name="user_id" value='{{ following_user.id }}' class="button2" style="margin-left: 18px">unfollow</button>
+                <b>{{ following_user.nickname }}</b> | email_address: {{ following_user.email_address }}
+                <button id='unfollow_button' type="submit" name="user_id" value='{{ following_user.id }}' class="button2" style="margin-left: 28px">unfollow</button>
             </form>
             {% endfor %}
         </div>
         <div class="col-md-6" style="text-align: center;">
             <h2>Your followers</h2><br>
             {% for follower in current_user.follower_set.all %}
-                <img class="img-thumbnail" src="{{ follower.portrait_url }}" height="80" width="80"><br>
+                <img class="img-thumbnail" src="{{ follower.portrait_url }}" height="80" width="80">
+                <b>{{ follower.nickname }}</b> | email_address: {{ follower.email_address }}
+                <br>
             {% endfor %}
         </div>
     </div>
