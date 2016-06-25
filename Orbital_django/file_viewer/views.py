@@ -54,6 +54,10 @@ def display_file_viewer_page(request):
         elif request.POST["operation"] == "comment":
             document = models.Document.objects.get(id=int(request.POST["document_id"]))
             comment = models.Comment()
+
+            if request.POST.has_key("reply_to_comment_id"):
+                comment.reply_to_comment = models.Comment.objects.get(id=int(request.POST["reply_to_comment_id"]))
+
             comment.content = request.POST["comment_content"]
             comment.commenter = get_user(request)
             comment.document_this_comment_belongs = document

@@ -75,10 +75,11 @@ class Comment(models.Model):
     commenter = models.ForeignKey(User)  # many Comments to one User
     document_this_comment_belongs = models.ForeignKey(Document)  # many Commments to one Document
     content = models.TextField()
+    reply_to_comment = models.ForeignKey("Comment", null=True)
     num_like = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return self.content
+        return str(self.id) + ": " + self.content
 
 
 class Annotation(models.Model):
@@ -86,13 +87,27 @@ class Annotation(models.Model):
     annotator = models.ForeignKey(User)
     document_this_annotation_belongs = models.ForeignKey(Document)
     content = models.TextField()
-    num_like = models.IntegerField(default=0)
+
     page_id = models.CharField(max_length=18)
     height_percent = models.FloatField()
     width_percent = models.FloatField()
     top_percent = models.FloatField()
     left_percent = models.FloatField()
     frame_color = models.CharField(max_length=18)
+    
+    num_like = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return self.content
+        return str(self.id) + ": " + self.content
+
+
+class AnnotationReply(models.Model):
+    post_time = models.DateTimeField(auto_now=False, auto_now_add=True)
+    replier = models.ForeignKey(User)  # many Comments to one User
+    reply_to_annotation = models.ForeignKey(Annotation)
+    reply_to_annotation_reply = models.ForeignKey("AnnotationReply", blank=True)
+    content = models.TextField()
+    num_like = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return str(self.id) + ": " + self.content

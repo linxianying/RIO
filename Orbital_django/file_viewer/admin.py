@@ -3,28 +3,28 @@ import models
 
 
 class DocumentModelAdmin(admin.ModelAdmin):
-    list_display = ["title", "unique_file", "owner", "id"]
-    list_filter = ["title", "unique_file", "owner", "id"]
-    search_fields = ["title", "unique_file", "owner", "id"]
+    list_display = ["id", "title", "unique_file", "owner"]
+    list_filter = ["id", "title", "unique_file", "owner"]
+    search_fields = ["id", "title", "unique_file", "owner"]
     filter_horizontal = ['collectors']
 
 
 class UniqueFileModelAdmin(admin.ModelAdmin):
-    list_display = ["file_field", "md5", "id"]
-    list_filter = ["file_field", "md5", "id"]
-    search_fields = ["file_field", "md5", "id"]
+    list_display = ["id", "file_field", "md5"]
+    list_filter = ["id", "file_field", "md5"]
+    search_fields = ["id", "file_field", "md5"]
 
 
 class CommentModelAdmin(admin.ModelAdmin):
-    list_display = ["content", "document_this_comment_belongs", "commenter", "num_like", "id"]
-    list_filter = ["content", "document_this_comment_belongs", "commenter", "num_like", "id"]
-    search_fields = ["content", "document_this_comment_belongs", "commenter", "num_like", "id"]
+    list_display = ["id", "content", "document_this_comment_belongs", "commenter", "num_like"]
+    list_filter = ["id", "content", "document_this_comment_belongs", "commenter", "num_like"]
+    search_fields = ["id", "content", "document_this_comment_belongs", "commenter", "num_like"]
 
 
 class AnnotationModelAdmin(admin.ModelAdmin):
-    list_display = ["content", "document_this_annotation_belongs", "annotator", "num_like", "id"]
-    list_filter = ["content", "document_this_annotation_belongs", "annotator", "num_like", "id"]
-    search_fields = ["content", "document_this_annotation_belongs", "annotator", "num_like", "id"]
+    list_display = ["id", "content", "document_this_annotation_belongs", "annotator", "num_like"]
+    list_filter = ["id", "content", "document_this_annotation_belongs", "annotator", "num_like"]
+    search_fields = ["id", "content", "document_this_annotation_belongs", "annotator", "num_like"]
 
 admin.site.register(models.Document, DocumentModelAdmin)
 admin.site.register(models.UniqueFile, UniqueFileModelAdmin)

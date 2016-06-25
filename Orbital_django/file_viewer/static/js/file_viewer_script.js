@@ -142,7 +142,7 @@ function startListeningSelectionBoxCreation() {
 
                             new_annotation.attr("annotation_id", new_annotation_id)
 
-                            markdown();
+        
                             // after uploading the annotation, close the window
                             layer.close(annotationWindow);
                         },
@@ -205,10 +205,50 @@ function prepareScrollPageIntoView() {
     });
 }
 
+function addCommentRelatedListener() {
+    $(".likeCommentButton").on("click", function () {
+        var $this_button = $(this);
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                operation: "like_comment",
+                comment_id: $this_button.val(),
+            },
+            success: function () {
+                var new_num = parseInt($this_button.next().text()) + 1;
+                $this_button.next().text(new_num.toString());
+            },
+        });
+    });
+    $(".reply_comment_button").on("click", function() {
+        $(this).next(".reply_comment_form").slideToggle(180);
+    })
+    $(".post_comment_reply_button").on("click", function() {
+        var thisButton = $(this);
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                operation: "comment",
+                comment_content: thisButton.prev("textarea[name='comment_content']").val(),
+                document_id: $("button[name='document_id']").val(),
+                reply_to_comment_id: thisButton.val(),
+            },
+            success: function (data) {
+                $("#comment_update_div").html(data);
+                // 修改html内容后，有关的事件监听会被自动删除，因此需要重新添加事件监听
+                addCommentRelatedListener();
+            }
+        })
+    })
+}
+
 scaleFactor = 1.08;
 
 $(document).ready(function() {
-    markdown();
 
     $("#refresh_comment_button").on('click', function () {
         $.ajax({
@@ -221,7 +261,6 @@ $(document).ready(function() {
             },
             success: function (data) {
                 $("#comment_update_div").html(data);
-                markdown();
             },
         })
     });
@@ -317,14 +356,22 @@ $(document).ready(function() {
         resizeAnnotations(scaleFactor)
     });
 
-    $("#show_annotation_frame_button").on('click', function() {
-        $(".Annotation").each(function() {
-            $(this).slideDown(180);
-        });
+    $("#post_comment_button").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                operation: "comment",
+                comment_content: $("textarea[name='comment_content']").val(),
+                document_id: $("button[name='document_id']").val(),
+            },
+            success: function (data) {
+                $("#comment_update_div").html(data);
+                // 修改html内容后，有关的事件监听会被自动删除，因此需要重新添加事件监听
+                addCommentRelatedListener();
+            }
+        })
     });
-    $("#hide_annotation_frame_button").on('click', function() {
-        $(".Annotation").each(function() {
-            $(this).slideUp(180);
-        });
-    });
+    addCommentRelatedListener()
 });

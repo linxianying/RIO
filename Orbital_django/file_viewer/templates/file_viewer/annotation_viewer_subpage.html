@@ -1,7 +1,7 @@
 {% for annotation in annotations %}
 <hr>
 <blockquote class="AnnotationBlock" annotation_id="{{ annotation.id }}">
-    <div class="content-markdown"> {{ annotation.content|safe }} </div>
+    <div class="content-markdown"> {{ annotation.content|safe|linebreaks }} </div>
     <button name="annotation_id" value="{{ annotation.id }}" class="likeAnnotationButton glyphicon glyphicon-thumbs-up"></button>
     <bold id="num_like">{{ annotation.num_like }}</bold>
     <footer>
