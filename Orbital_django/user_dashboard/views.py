@@ -31,9 +31,6 @@ def handle_file_upload(request):
     document = models.Document(owner=user, unique_file=unique_file, title=request.POST["title"])
     document.save()  # save this document to the database
 
-    user.document_set.add(document)
-    unique_file.document_set.add(document)
-
     return redirect("user_dashboard")
 
 
@@ -96,9 +93,7 @@ def handle_follow_user(request):
     user = get_user(request)
     follow_target_user = User.objects.get(id=follow_target_user_id)
     user.following_users.add(follow_target_user)
-    follow_target_user.follower_set.add(user)
     user.save()
-    follow_target_user.save()
     return redirect('user_dashboard')
 
 
@@ -107,7 +102,5 @@ def handle_unfollow_user(request):
     user = get_user(request)
     follow_target_user = User.objects.get(id=follow_target_user_id)
     user.following_users.remove(follow_target_user)
-    follow_target_user.follower_set.remove(user)
     user.save()
-    follow_target_user.save()
     return redirect('user_dashboard')

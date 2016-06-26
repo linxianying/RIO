@@ -75,7 +75,7 @@ class Comment(models.Model):
     commenter = models.ForeignKey(User)  # many Comments to one User
     document_this_comment_belongs = models.ForeignKey(Document)  # many Commments to one Document
     content = models.TextField()
-    reply_to_comment = models.ForeignKey("Comment", null=True)
+    reply_to_comment = models.ForeignKey("Comment", related_name="reply_set", null=True, blank=True)
     num_like = models.IntegerField(default=0)
 
     def __unicode__(self):
@@ -105,7 +105,7 @@ class AnnotationReply(models.Model):
     post_time = models.DateTimeField(auto_now=False, auto_now_add=True)
     replier = models.ForeignKey(User)  # many Comments to one User
     reply_to_annotation = models.ForeignKey(Annotation)
-    reply_to_annotation_reply = models.ForeignKey("AnnotationReply", blank=True)
+    reply_to_annotation_reply = models.ForeignKey("AnnotationReply", related_name="reply_set", null=True, blank=True)
     content = models.TextField()
     num_like = models.IntegerField(default=0)
 

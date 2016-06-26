@@ -207,18 +207,18 @@ function prepareScrollPageIntoView() {
 
 function addCommentRelatedListener() {
     $(".likeCommentButton").on("click", function () {
-        var $this_button = $(this);
+        var $thisButton = $(this);
         $.ajax({
             type: "POST",
             url: "",
             data: {
                 csrfmiddlewaretoken: getCookie('csrftoken'),
                 operation: "like_comment",
-                comment_id: $this_button.val(),
+                comment_id: $thisButton.val(),
             },
             success: function () {
-                var new_num = parseInt($this_button.next().text()) + 1;
-                $this_button.next().text(new_num.toString());
+                var new_num = parseInt($thisButton.next().text()) + 1;
+                $thisButton.next().text(new_num.toString());
             },
         });
     });
@@ -226,21 +226,23 @@ function addCommentRelatedListener() {
         $(this).next(".reply_comment_form").slideToggle(180);
     })
     $(".post_comment_reply_button").on("click", function() {
-        var thisButton = $(this);
+        var $thisButton = $(this);
+        var index = layer.load(0, {shade: 0.18}); //0代表加载的风格，支持0-2
         $.ajax({
             type: "POST",
             url: "",
             data: {
                 csrfmiddlewaretoken: getCookie('csrftoken'),
                 operation: "comment",
-                comment_content: thisButton.prev("textarea[name='comment_content']").val(),
+                comment_content: $thisButton.prev("textarea[name='comment_content']").val(),
                 document_id: $("button[name='document_id']").val(),
-                reply_to_comment_id: thisButton.val(),
+                reply_to_comment_id: $thisButton.val(),
             },
             success: function (data) {
                 $("#comment_update_div").html(data);
                 // 修改html内容后，有关的事件监听会被自动删除，因此需要重新添加事件监听
                 addCommentRelatedListener();
+                layer.close(index);
             }
         })
     })
@@ -357,6 +359,8 @@ $(document).ready(function() {
     });
 
     $("#post_comment_button").click(function () {
+        $thisButton = $(this);
+        var index = layer.load(0, {shade: 0.18}); //0代表加载的风格，支持0-2
         $.ajax({
             type: "POST",
             url: "",
@@ -370,6 +374,8 @@ $(document).ready(function() {
                 $("#comment_update_div").html(data);
                 // 修改html内容后，有关的事件监听会被自动删除，因此需要重新添加事件监听
                 addCommentRelatedListener();
+                $("textarea[name='comment_content']").val("");
+                layer.close(index);
             }
         })
     });

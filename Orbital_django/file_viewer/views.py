@@ -27,8 +27,6 @@ def display_file_viewer_page(request):
             user = get_user(request)
             document = models.Document.objects.get(id=int(request.POST["document_id"]))
             document.collectors.add(user)
-            user.collected_document_set.add(document)
-            user.save()
             document.save()
             return HttpResponse()
 
@@ -36,8 +34,6 @@ def display_file_viewer_page(request):
             user = get_user(request)
             document = models.Document.objects.get(id=int(request.POST["document_id"]))
             document.collectors.remove(user)
-            user.collected_document_set.remove(document)
-            user.save()
             document.save()
             return HttpResponse()
 
@@ -54,16 +50,14 @@ def display_file_viewer_page(request):
         elif request.POST["operation"] == "comment":
             document = models.Document.objects.get(id=int(request.POST["document_id"]))
             comment = models.Comment()
+            comment.content = request.POST["comment_content"]
+            comment.commenter = get_user(request)
+            comment.document_this_comment_belongs = document
 
             if request.POST.has_key("reply_to_comment_id"):
                 comment.reply_to_comment = models.Comment.objects.get(id=int(request.POST["reply_to_comment_id"]))
 
-            comment.content = request.POST["comment_content"]
-            comment.commenter = get_user(request)
-            comment.document_this_comment_belongs = document
             comment.save()
-            document.comment_set.add(comment)
-            comment.commenter.comment_set.add(comment)
 
             context = {
                 "document": document,
@@ -85,13 +79,31 @@ def display_file_viewer_page(request):
             annotation.left_percent = request.POST["left_percent"]
             annotation.frame_color = request.POST["frame_color"]
             annotation.save()
-            document.annotation_set.add(annotation)
-            annotation.annotator.annotation_set.add(annotation)
 
             context = {
                 "document": document,
                 "annotations": document.annotation_set.order_by("page_id"),
                 "new_annotation_id": annotation.id,
+            }
+
+            return render(request, "file_viewer/annotation_viewer_subpage.html", context)
+
+        elif request.POST["operation"] == "reply_annotation":
+            annotation_reply = models.AnnotationReply()
+            annotation = models.Annotation.objects.get(id=int(request.POST["reply_to_annotation_id"]))
+            document = models.Document.objects.get(id=int(request.POST["document_id"]))
+            annotation_reply.content = request.POST["annotation_reply_content"]
+            annotation_reply.replier = get_user(request)
+            annotation_reply.reply_to_annotation = annotation
+
+            if request.POST.has_key("reply_to_annotation_reply_id"):
+                annotation_reply.reply_to_annotation_reply = models.AnnotationReply.objects.get(id=int(request.POST["reply_to_annotation_reply_id"]))
+                
+            annotation_reply.save()
+
+            context = {
+                "document": document,
+                "annotations": document.annotation_set.order_by("-post_time"),
             }
 
             return render(request, "file_viewer/annotation_viewer_subpage.html", context)

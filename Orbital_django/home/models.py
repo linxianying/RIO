@@ -55,7 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # field "password" inherited from AbstractBaseUser
 
-    following_users = models.ManyToManyField("User", related_name="follower_set", blank=True)
+    following_users = models.ManyToManyField("User", related_name="follower_set", blank=True, symmetrical=False)
 
     level = models.IntegerField(default=0)
 
