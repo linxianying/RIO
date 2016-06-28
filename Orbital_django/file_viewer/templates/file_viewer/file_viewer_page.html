@@ -105,10 +105,9 @@
 
         {% for annotation in annotations %}
             var new_annotation = $("<div class='Annotation' top_percent='{{ annotation.top_percent }}' left_percent='{{ annotation.left_percent }}' height_percent='{{ annotation.height_percent }}' width_percent='{{ annotation.width_percent }}'></div>");
-            var page_id = "{{ annotation.page_id }}";
+            var pageIndex = "{{ annotation.page_index }}";
             var frame_color = "{{ annotation.frame_color }}"
-            var page = $("#" + page_id);
-            var pageDiv = page.parents(".page_div, .PageDiv");
+            var pageDiv = $("#page_div_" + pageIndex);
             pageDiv.append(new_annotation);
             new_annotation.css({
                 "background": frame_color,

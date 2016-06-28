@@ -72,7 +72,7 @@ def display_file_viewer_page(request):
             annotation.content = request.POST["annotation_content"]
             annotation.annotator = get_user(request)
             annotation.document_this_annotation_belongs = document
-            annotation.page_id = request.POST["page_id"]
+            annotation.page_index = request.POST["page_id"].split("_")[2]
             annotation.height_percent = request.POST["height_percent"]
             annotation.width_percent = request.POST["width_percent"]
             annotation.top_percent = request.POST["top_percent"]
@@ -82,7 +82,7 @@ def display_file_viewer_page(request):
 
             context = {
                 "document": document,
-                "annotations": document.annotation_set.order_by("page_id"),
+                "annotations": document.annotation_set.order_by("page_index"),
                 "new_annotation_id": annotation.id,
             }
 
@@ -103,7 +103,7 @@ def display_file_viewer_page(request):
 
             context = {
                 "document": document,
-                "annotations": document.annotation_set.order_by("-post_time"),
+                "annotations": document.annotation_set.order_by("page_index"),
             }
 
             return render(request, "file_viewer/annotation_viewer_subpage.html", context)
@@ -186,7 +186,7 @@ def display_file_viewer_page(request):
                 "document": document,
                 "file_url": file_url[1:],
                 "comments": document.comment_set.order_by("-post_time"),
-                "annotations": document.annotation_set.order_by("page_id"),
+                "annotations": document.annotation_set.order_by("page_index"),
                 "collected": collected
             }
             return render(request, "file_viewer/pdf_file_viewer_page.html", context)
@@ -196,7 +196,7 @@ def display_file_viewer_page(request):
             "document": document,
             "pages": pages,
             "comments": document.comment_set.order_by("-post_time"),
-            "annotations": document.annotation_set.order_by("page_id"),
+            "annotations": document.annotation_set.order_by("page_index"),
             "collected": collected,
         }
         return render(request, "file_viewer/file_viewer_page.html", context)

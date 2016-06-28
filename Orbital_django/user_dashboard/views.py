@@ -94,7 +94,7 @@ def handle_follow_user(request):
     follow_target_user = User.objects.get(id=follow_target_user_id)
     user.following_users.add(follow_target_user)
     user.save()
-    return redirect('user_dashboard')
+    return HttpResponse()
 
 
 def handle_unfollow_user(request):

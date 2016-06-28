@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.mail import EmailMessage  # for sending verification using e-mail
-from django.contrib.auth import authenticate, login  # for log in verification
+from django.contrib.auth import authenticate, login, get_user  # for log in verification
 from django.shortcuts import redirect
 from django.db.models import Q
 import models
 import random
 from home.models import User
 from file_viewer.models import Document
+from coterie.models import Coterie
 
 
 def display_home_page(request):
@@ -94,9 +95,12 @@ def handle_search(request):
     search_key = request.GET["search_key"]
     result_documents = Document.objects.filter(title__icontains=search_key)  # case-insensitive contain
     result_users = User.objects.filter(Q(nickname__icontains=search_key) | Q(email_address__icontains=search_key))
+    result_coteries = Coterie.objects.filter(Q(name__icontains=search_key) | Q(id__icontains=search_key))
     context = {
         "search_key": search_key,
         "result_documents": result_documents,  
         "result_users": result_users,
+        "result_coteries": result_coteries,
+        "logged_in_user": get_user(request),
     }
     return render(request, "home/search_result_page.html", context)

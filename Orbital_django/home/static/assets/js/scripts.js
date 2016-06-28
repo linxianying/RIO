@@ -43,10 +43,11 @@ jQuery(document).ready(function() {
             icon: 6,
             skin: 'layui-layer-molv', 
             shift: 1,
+            offset: '0px',
             area: ['auto', 'auto'],
             time: 0,
         })
-        
+
         parentRegistrationForm.find("iframe").on("load", function() {
             layer.close(loadingLayer);
             layer.close(messageLayer);

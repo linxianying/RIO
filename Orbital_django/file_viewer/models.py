@@ -88,7 +88,7 @@ class Annotation(models.Model):
     document_this_annotation_belongs = models.ForeignKey(Document)
     content = models.TextField()
 
-    page_id = models.CharField(max_length=18)
+    page_index = models.IntegerField()
     height_percent = models.FloatField()
     width_percent = models.FloatField()
     top_percent = models.FloatField()

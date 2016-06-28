@@ -29,4 +29,8 @@ urlpatterns = [
 
     # app: user_dashboard
     url(r'^user_dashboard/', include('user_dashboard.urls')),
+
+    # app: coterie
+    url(r'^coterie/', include('coterie.urls')),
 ]
+

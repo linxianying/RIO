@@ -119,17 +119,25 @@
             <h4> {{ current_user.get_full_name }} </h4>
             <br>
         </div>
+
         <div class="col-md-6">
             <form action="/handle_search" mtehod="get" class="form-inline" align="center">
                 <input name="search_key" type="text" class="form-control input-sm" required="required">
                 <button type="submit" class="button2">search</button>
             </form>
-            <hr>
+            <br>
             <form id="file_upload_form" enctype="multipart/form-data" action = "/user_dashboard/handle_file_upload" method = "post">
                 {% csrf_token %}
                 <input name = "file_upload" type="file" class="form-control input-sm" accept="application/pdf,application/zip,application/rar" required="required">
                 <input name = "title" type="text" class="form-control input-sm" placeholder="title" required="required">
                 <button type="submit" class="button2" style="float: right">upload</button>
+            </form>
+            <br><br>
+            <form id="create_coterie_form" action = "/coterie/handle_create_coterie" method = "post">
+                {% csrf_token %}
+                <input name = "coterie_name" type="text" class="form-control input-sm" placeholder="name" required="required">
+                <input name = "coterie_description" type="text" class="form-control input-sm" placeholder="description">
+                <button type="submit" class="button2" style="float: right">create group</button>
             </form>
         </div>
     </div>
@@ -213,6 +221,57 @@
                 <img class="img-thumbnail" src="{{ follower.portrait_url }}" height="80" width="80">
                 <b>{{ follower.nickname }}</b> | email_address: {{ follower.email_address }}
                 <br>
+            {% endfor %}
+        </div>
+    </div>
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6" style="text-align: center;">
+            <h2>groups you administrate</h2><br>
+            {% for administrated_coterie in current_user.administrated_coterie_set.all %}
+                <h4>({{ administrated_coterie.id }}) {{ administrated_coterie.name }}</h4>
+                <h5>{{ administrated_coterie.description }}</h5>
+                <footer>
+                    <b>administrators:</b>
+                    {% for administrator in administrated_coterie.administrators.all %} 
+                        {{ administrator.nickname }} ({{ administrator.email_address }});
+                    {% endfor %}
+                    <br>
+                    <b>members:</b>
+                    {% for member in administrated_coterie.members.all %} 
+                        {{ member.nickname }} ({{ member.email_address }});
+                    {% endfor %}
+                    <br>
+                    <b>applicants:</b>
+                    {% for applicant in administrated_coterie.applicants.all %} 
+                        <form action="/coterie/handle_permit_join_coterie" method="post">
+                            {% csrf_token %}
+                            {{ applicant.nickname }} ({{ applicant.email_address }})
+                            <input name="coterie_id" value={{ administrated_coterie.id }} style="display: none"></input>
+                            <button tyle="submit" class="button2" name="applicant_id" value={{ applicant.id }}>permit</button>
+                        </form>
+                    {% endfor %}
+                </footer>
+            {% endfor %}
+        </div>
+        <div class="col-md-6" style="text-align: center;">
+            <h2>groups you join</h2><br>
+            {% for joined_coterie in current_user.joined_coterie_set.all %}
+                <h4>({{ joined_coterie.id }}) {{ joined_coterie.name }}</h4>
+                <h5>{{ joined_coterie.description }}</h5>
+                <footer>
+                    <b>administrators:</b>
+                    {% for administrator in joined_coterie.administrators.all %} 
+                        {{ administrator.nickname }} ({{ administrator.email_address }});
+                    {% endfor %}
+                    <br>
+                    <b>members:</b>
+                    {% for member in joined_coterie.members.all %} 
+                        {{ member.nickname }} ({{ member.email_address }});
+                    {% endfor %}
+                    <br>
+                </footer>
             {% endfor %}
         </div>
     </div>
