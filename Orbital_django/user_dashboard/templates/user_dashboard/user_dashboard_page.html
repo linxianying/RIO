@@ -245,11 +245,13 @@
                     <br>
                     <b>applicants:</b>
                     {% for applicant in administrated_coterie.applicants.all %} 
-                        <form action="/coterie/handle_permit_join_coterie" method="post">
+                        <form action="/coterie/handle_join_coterie" method="post">
                             {% csrf_token %}
                             {{ applicant.nickname }} ({{ applicant.email_address }})
-                            <input name="coterie_id" value={{ administrated_coterie.id }} style="display: none"></input>
-                            <button tyle="submit" class="button2" name="applicant_id" value={{ applicant.id }}>permit</button>
+                            <input name="coterie_id" value={{ administrated_coterie.id }} style="display: none;">
+                            <input name="applicant_id" value={{ applicant.id }} style="display: none;">
+                            <button type="submit" class="button2" name="decision" value="accept">accept</button>
+                            <button type="submit" class="button2" name="decision" value="refuse">refuse</button>
                         </form>
                     {% endfor %}
                 </footer>

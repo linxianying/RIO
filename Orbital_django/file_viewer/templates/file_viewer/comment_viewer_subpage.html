@@ -7,7 +7,7 @@
     {% endif %}
     </footer><br>
     <div class="content-markdown"> {{ comment.content|safe|linebreaks }} </div>
-    <button name="comment_id" value="{{ comment.id }}" class="likeCommentButton glyphicon glyphicon-thumbs-up"></button>
+    <span style="cursor: pointer;" comment_id="{{ comment.id }}" class="likeCommentButton glyphicon glyphicon-thumbs-up"></span>
     <bold id="num_like">{{ comment.num_like }}</bold>
     <footer>
         <img class="img-rounded" src="{{ comment.commenter.portrait_url }}" height="80" width="80">

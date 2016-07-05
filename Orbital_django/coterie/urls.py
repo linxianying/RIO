@@ -9,6 +9,6 @@ urlpatterns = [
 
     url(r'^handle_apply_coterie', views.handle_apply_coterie, name="handle_apply_coterie"),
 
-    url(r'^handle_permit_join_coterie', views.handle_permit_join_coterie, name="handle_permit_join_coterie"),
+    url(r'^handle_join_coterie', views.handle_join_coterie, name="handle_join_coterie"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
